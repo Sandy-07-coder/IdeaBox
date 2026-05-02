@@ -1,0 +1,4 @@
+ALTER TABLE public.team_requests 
+ADD COLUMN linkedin_link TEXT,
+ADD COLUMN bio TEXT,
+ADD COLUMN reason TEXT;
