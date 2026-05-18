@@ -1,25 +1,26 @@
 :root {
-  --fd-primary: #4a40e0;
-  --fd-primary-dim: #3d30d4;
-  --fd-on-primary: #f4f1ff;
-  --fd-primary-container: #9795ff;
-  --fd-on-primary-container: #14007e;
-  --fd-secondary: #6249b2;
-  --fd-secondary-container: #d8caff;
-  --fd-on-secondary-container: #4e339c;
-  --fd-tertiary-container: #fd8bca;
-  --fd-on-tertiary-container: #610244;
-  --fd-surface: #f5f7f9;
+  --fd-primary: #2563eb;
+  --fd-primary-dim: #1d4ed8;
+  --fd-on-primary: #ffffff;
+  --fd-primary-container: #dbeafe;
+  --fd-on-primary-container: #1e3a8a;
+  --fd-secondary: #475569;
+  --fd-secondary-container: #f1f5f9;
+  --fd-on-secondary-container: #0f172a;
+  --fd-tertiary-container: #e0e7ff;
+  --fd-on-tertiary-container: #3730a3;
+  --fd-surface: #f8fafc;
   --fd-surface-container-lowest: #ffffff;
-  --fd-surface-container-low: #eef1f3;
-  --fd-surface-container: #e5e9eb;
-  --fd-on-surface: #2c2f31;
-  --fd-on-surface-variant: #595c5e;
-  --fd-outline: #747779;
-  --fd-outline-variant: #abadaf;
-  --fd-ghost-border: rgba(171, 173, 175, 0.15);
-  --fd-glass: rgba(245, 247, 249, 0.7);
+  --fd-surface-container-low: #f1f5f9;
+  --fd-surface-container: #e2e8f0;
+  --fd-on-surface: #0f172a;
+  --fd-on-surface-variant: #475569;
+  --fd-outline: #94a3b8;
+  --fd-outline-variant: #cbd5e1;
+  --fd-ghost-border: rgba(148, 163, 184, 0.2);
+  --fd-glass: rgba(255, 255, 255, 0.8);
 }
+
 
 body {
   margin: 0;
@@ -46,7 +47,37 @@ body {
   flex-direction: column;
   position: fixed;
   height: 100%;
-  z-index: 20;
+  z-index: 60;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.fd-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.fd-sidebar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (min-width: 1024px) {
+  .fd-sidebar {
+    box-shadow: none;
+    border-right: 1px solid var(--fd-ghost-border);
+  }
+  .fd-sidebar-overlay {
+    display: none !important;
+  }
 }
 
 .fd-sidebar-header {
@@ -144,8 +175,17 @@ body {
 /* Main Area */
 .fd-main {
   flex: 1;
-  margin-left: 16rem;
-  padding: 2rem;
+  width: 100%;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  margin-left: 0;
+}
+
+@media (min-width: 1024px) {
+  .fd-main.sidebar-open {
+    margin-left: 16rem;
+    width: calc(100% - 16rem);
+  }
 }
 
 .fd-header {

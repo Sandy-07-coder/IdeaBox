@@ -3,11 +3,43 @@ import ProfileDropdown from './ProfileDropdown';
 import NotificationsDropdown from './NotificationsDropdown';
 import MessagesDropdown from './MessagesDropdown';
 import { useUserStore } from '../../store';
+import { useChatStore } from '../../store/chatStore';
+import { useNotificationStore } from '../../store/notificationStore';
 
 export default function TopHeader({ toggleSidebar }) {
-  const { currentUserProfile } = useUserStore();
-  const [activeDropdown, setActiveDropdown] = useState(null); // 'profile', 'notifications', 'messages', null
+  const { currentUser, currentUserProfile } = useUserStore();
+  const { unreadCount, fetchUnreadCount, subscribeToGlobalMessages, updatePresence } = useChatStore();
+  const { 
+    unreadCount: notifUnreadCount, 
+    fetchNotifications, 
+    subscribeToNotifications 
+  } = useNotificationStore();
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const headerRef = useRef(null);
+  const globalSubRef = useRef(null);
+
+  // Fetch unread count and subscribe to global messages
+  useEffect(() => {
+    if (currentUser?.id) {
+      fetchUnreadCount(currentUser.id);
+      fetchNotifications(currentUser.id);
+      updatePresence(currentUser.id, true);
+
+      if (!globalSubRef.current) {
+        globalSubRef.current = subscribeToGlobalMessages(currentUser.id);
+      }
+      
+      const notifSub = subscribeToNotifications(currentUser.id);
+
+      // Set offline on page unload
+      const handleUnload = () => updatePresence(currentUser.id, false);
+      window.addEventListener('beforeunload', handleUnload);
+      return () => {
+        window.removeEventListener('beforeunload', handleUnload);
+        if (notifSub) notifSub.unsubscribe();
+      };
+    }
+  }, [currentUser?.id, fetchUnreadCount, fetchNotifications, subscribeToNotifications, subscribeToGlobalMessages, updatePresence]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,7 +56,7 @@ export default function TopHeader({ toggleSidebar }) {
   };
 
   return (
-    <header ref={headerRef} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 2rem', background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+    <header ref={headerRef} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
       
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <button 
@@ -46,7 +78,11 @@ export default function TopHeader({ toggleSidebar }) {
             onMouseOut={e => e.currentTarget.style.color = activeDropdown === 'notifications' ? '#4F46E5' : '#6b7280'}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>notifications</span>
-            <span style={{ position: 'absolute', top: '2px', right: '2px', width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%', border: '2px solid #fff' }}></span>
+            {notifUnreadCount > 0 && (
+              <span style={{ position: 'absolute', top: '-2px', right: '-4px', minWidth: '16px', height: '16px', background: '#ef4444', color: '#fff', borderRadius: '999px', fontSize: '0.6rem', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', border: '2px solid #fff' }}>
+                {notifUnreadCount > 9 ? '9+' : notifUnreadCount}
+              </span>
+            )}
           </button>
           <NotificationsDropdown isOpen={activeDropdown === 'notifications'} onClose={() => setActiveDropdown(null)} />
         </div>
@@ -54,11 +90,16 @@ export default function TopHeader({ toggleSidebar }) {
         <div style={{ position: 'relative' }}>
           <button 
             onClick={() => toggleDropdown('messages')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: activeDropdown === 'messages' ? '#4F46E5' : '#6b7280', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: activeDropdown === 'messages' ? '#4F46E5' : '#6b7280', display: 'flex', alignItems: 'center', transition: 'color 0.2s', position: 'relative' }}
             onMouseOver={e => e.currentTarget.style.color = '#4F46E5'}
             onMouseOut={e => e.currentTarget.style.color = activeDropdown === 'messages' ? '#4F46E5' : '#6b7280'}
           >
             <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>chat</span>
+            {unreadCount > 0 && (
+              <span style={{ position: 'absolute', top: '-2px', right: '-4px', minWidth: '16px', height: '16px', background: '#ef4444', color: '#fff', borderRadius: '999px', fontSize: '0.6rem', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px', border: '2px solid #fff' }}>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
           </button>
           <MessagesDropdown isOpen={activeDropdown === 'messages'} onClose={() => setActiveDropdown(null)} />
         </div>

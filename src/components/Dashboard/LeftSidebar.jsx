@@ -1,8 +1,10 @@
 import React from 'react';
 
-export default function LeftSidebar({ activeTab, setActiveTab, isAdmin, isSidebarOpen }) {
+export default function LeftSidebar({ activeTab, setActiveTab, isAdmin, isSidebarOpen, setIsSidebarOpen }) {
   return (
-    <aside className="fd-sidebar" style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)', transition: 'transform 0.3s ease', zIndex: 50 }}>
+    <>
+      <div className={`fd-sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
+      <aside className="fd-sidebar" style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
       <div className="fd-sidebar-header">
         <img
           alt="SEC Logo"
@@ -75,5 +77,6 @@ export default function LeftSidebar({ activeTab, setActiveTab, isAdmin, isSideba
         </div>
       </div>
     </aside>
+    </>
   );
 }

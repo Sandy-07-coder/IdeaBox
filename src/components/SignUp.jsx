@@ -17,12 +17,14 @@ export default function SignUp() {
     const checkExistingProfile = async (user) => {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id')
+        .select('id, institution_name, terms_agreed')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (profile) {
-        // Profile already exists — skip signup entirely
+      // The DB trigger creates a row immediately on sign up with a default persona.
+      // We must check if they actually completed step 3 (e.g. they set terms_agreed or institution_name).
+      if (profile && (profile.terms_agreed || profile.institution_name)) {
+        // Profile already exists AND is setup — skip signup entirely
         navigate('/dashboard');
         return true;
       }

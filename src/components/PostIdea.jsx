@@ -5,48 +5,34 @@ import '../design/post-idea.css';
 
 export default function PostIdea() {
   const navigate = useNavigate();
-  const [projectTitle, setProjectTitle] = useState('');
-  const [elevatorPitch, setElevatorPitch] = useState('');
-  const [projectStatus, setProjectStatus] = useState('Just an Idea');
-  const [teammatesNeeded, setTeammatesNeeded] = useState(1);
-  const [skills, setSkills] = useState([
-    { id: 1, name: 'UI/UX', type: 'primary' },
-    { id: 2, name: 'Python', type: 'primary' },
-    { id: 3, name: 'Finance', type: 'tertiary' }
-  ]);
-  const [newSkill, setNewSkill] = useState('');
+  const [step, setStep] = useState(1); // 1: Basic Info, 2: Additional Details
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handlePitchChange = (e) => {
-    if (e.target.value.length <= 100) {
-      setElevatorPitch(e.target.value);
+  // Step 1 fields
+  const [ideaTitle, setIdeaTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [problemStatement, setProblemStatement] = useState('');
+  const [solution, setSolution] = useState('');
+  const [targetAudience, setTargetAudience] = useState('');
+
+  // Step 2 fields
+  const [requirements, setRequirements] = useState('');
+  const [prototypeUrl, setPrototypeUrl] = useState('');
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState('');
+
+  const handleAddMember = () => {
+    if (newMemberName.trim() && newMemberRole.trim()) {
+      setTeamMembers([...teamMembers, { name: newMemberName.trim(), role: newMemberRole.trim() }]);
+      setNewMemberName('');
+      setNewMemberRole('');
     }
   };
 
-  const handleTeammateChange = (delta) => {
-    setTeammatesNeeded(prev => {
-      const newVal = prev + delta;
-      if (newVal >= 1 && newVal <= 10) return newVal;
-      return prev;
-    });
-  };
-
-  const handleAddSkill = (e) => {
-    if (e.key === 'Enter' && newSkill.trim() !== '') {
-      e.preventDefault();
-      const newSkillObj = {
-        id: Date.now(),
-        name: newSkill.trim(),
-        type: 'primary' // default type
-      };
-      setSkills([...skills, newSkillObj]);
-      setNewSkill('');
-    }
-  };
-
-  const handleRemoveSkill = (idToRemove) => {
-    setSkills(skills.filter(skill => skill.id !== idToRemove));
+  const handleRemoveMember = (idx) => {
+    setTeamMembers(teamMembers.filter((_, i) => i !== idx));
   };
 
   const handleSubmit = async (e) => {
@@ -65,12 +51,20 @@ export default function PostIdea() {
     const { error: insertError } = await supabase.from('ideas').insert([
       {
         author_id: user.id,
-        project_title: projectTitle,
-        elevator_pitch: elevatorPitch,
-        project_status: projectStatus,
-        teammates_needed: teammatesNeeded,
-        skills_needed: skills.map(s => s.name),
-        is_approved: false
+        project_title: ideaTitle,
+        elevator_pitch: description.substring(0, 100),
+        description: description,
+        problem_statement: problemStatement,
+        solution: solution,
+        target_audience: targetAudience,
+        requirements: requirements || null,
+        prototype_url: prototypeUrl || null,
+        team_members: teamMembers.length > 0 ? teamMembers : [],
+        project_status: 'Just an Idea',
+        teammates_needed: 1,
+        skills_needed: [],
+        is_approved: false,
+        is_hiring: false,
       }
     ]);
 
@@ -115,143 +109,228 @@ export default function PostIdea() {
 
       {/* Modal Overlay */}
       <div className="pi-modal-overlay">
-        {/* Form Card */}
         <section className="pi-form-card">
           {/* Header */}
           <div className="pi-header">
-            <img 
-              alt="SEC Logo" 
-              className="pi-logo" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1aDWPXfkYscYWDWX4_1d9rTvnTyQuoZFByy2N5bgAfOHNYw_nM6jbF28XU5yzSXNNZVAQ1W3pGF6yKbA5a6_qyvO4AuEWPmmIPz9B2gdMkDNyQGU2JooxY1Pu91WgokFmM6UH5eKYxUyb-hxjlkk8C-9n86Zi_qzkNVZtBt8G8E6hICrwRdOOe09wgxR8MOC62soB6KIlz0pU-nH480RqAx8X2VgESZ44_Y7__BheYVHutUkuC_h-hP7gGU99kgdADnlLXS3Mh_w" 
+            <img
+              alt="SEC Logo"
+              className="pi-logo"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1aDWPXfkYscYWDWX4_1d9rTvnTyQuoZFByy2N5bgAfOHNYw_nM6jbF28XU5yzSXNNZVAQ1W3pGF6yKbA5a6_qyvO4AuEWPmmIPz9B2gdMkDNyQGU2JooxY1Pu91WgokFmM6UH5eKYxUyb-hxjlkk8C-9n86Zi_qzkNVZtBt8G8E6hICrwRdOOe09wgxR8MOC62soB6KIlz0pU-nH480RqAx8X2VgESZ44_Y7__BheYVHutUkuC_h-hP7gGU99kgdADnlLXS3Mh_w"
             />
             <h1 className="pi-title">Post Your Idea</h1>
-            <p className="pi-subtitle">Share your vision with the Idea-Box community</p>
+            <p className="pi-subtitle">
+              {step === 1 ? 'Tell us about your vision' : 'Add supporting details (optional)'}
+            </p>
+
+            {/* Step Indicator */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+              <div style={{ width: '3rem', height: '4px', borderRadius: '2px', background: '#2563eb', transition: 'background 0.3s' }}></div>
+              <div style={{ width: '3rem', height: '4px', borderRadius: '2px', background: step >= 2 ? '#2563eb' : '#e2e8f0', transition: 'background 0.3s' }}></div>
+            </div>
           </div>
 
           {/* Form Body */}
-          <form className="pi-form-body" onSubmit={handleSubmit}>
-            {/* Project Title */}
-            <div className="pi-input-group">
-              <label className="pi-label">Project Title</label>
-              <input 
-                className="pi-input bold" 
-                placeholder="Enter a descriptive name for your idea" 
-                type="text" 
-                value={projectTitle}
-                onChange={(e) => setProjectTitle(e.target.value)}
-                required
-              />
-            </div>
+          <form className="pi-form-body" onSubmit={step === 2 ? handleSubmit : (e) => { e.preventDefault(); setStep(2); }}>
 
-            {/* Elevator Pitch */}
-            <div className="pi-input-group">
-              <div className="pi-label">
-                <span>Elevator Pitch</span>
-                <span className="pi-char-count">{elevatorPitch.length}/100</span>
-              </div>
-              <input 
-                className="pi-input" 
-                maxLength="100" 
-                placeholder="Explain your idea in one sentence..." 
-                type="text" 
-                value={elevatorPitch}
-                onChange={handlePitchChange}
-                required
-              />
-            </div>
-
-            {/* Two Column Row: Status & Teammates */}
-            <div className="pi-row">
-              {/* Project Status */}
-              <div className="pi-input-group">
-                <label className="pi-label">Project Status</label>
-                <div className="pi-select-wrapper">
-                  <select 
-                    className="pi-select"
-                    value={projectStatus}
-                    onChange={(e) => setProjectStatus(e.target.value)}
-                  >
-                    <option value="Just an Idea">Just an Idea</option>
-                    <option value="Prototype Ready">Prototype Ready</option>
-                    <option value="MVP Built">MVP Built</option>
-                  </select>
-                  <span className="material-symbols-outlined pi-select-icon">expand_more</span>
-                </div>
-              </div>
-
-              {/* Teammates Needed */}
-              <div className="pi-input-group">
-                <label className="pi-label">Teammates Needed</label>
-                <div className="pi-counter">
-                  <button 
-                    type="button"
-                    className="pi-counter-btn" 
-                    onClick={() => handleTeammateChange(-1)}
-                  >
-                    <span className="material-symbols-outlined">remove</span>
-                  </button>
-                  <input 
-                    className="pi-counter-input" 
-                    max="10" 
-                    min="1" 
-                    type="number" 
-                    value={teammatesNeeded}
-                    readOnly
+            {step === 1 && (
+              <>
+                {/* Idea Title */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Idea Title *</label>
+                  <input
+                    className="pi-input bold"
+                    placeholder="Give your idea a compelling name"
+                    type="text"
+                    value={ideaTitle}
+                    onChange={(e) => setIdeaTitle(e.target.value)}
+                    required
                   />
-                  <button 
-                    type="button"
-                    className="pi-counter-btn" 
-                    onClick={() => handleTeammateChange(1)}
-                  >
-                    <span className="material-symbols-outlined">add</span>
-                  </button>
                 </div>
-              </div>
-            </div>
 
-            {/* Skills Looking For */}
-            <div className="pi-input-group">
-              <label className="pi-label">Skills I’m Looking For</label>
-              <div className="pi-skills-container">
-                {/* Tags */}
-                {skills.map(skill => (
-                  <div key={skill.id} className={`pi-skill-tag ${skill.type}`}>
-                    {skill.name}
-                    <span 
-                      className="material-symbols-outlined pi-skill-remove"
-                      onClick={() => handleRemoveSkill(skill.id)}
+                {/* Description */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Description *</label>
+                  <textarea
+                    className="pi-input"
+                    placeholder="Describe your idea in detail — what is it and what does it do?"
+                    rows="3"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    required
+                    style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                  />
+                </div>
+
+                {/* Problem Statement */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Problem Statement *</label>
+                  <textarea
+                    className="pi-input"
+                    placeholder="What problem does your idea solve? Why does it matter?"
+                    rows="3"
+                    value={problemStatement}
+                    onChange={(e) => setProblemStatement(e.target.value)}
+                    required
+                    style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                  />
+                </div>
+
+                {/* Solution */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Solution *</label>
+                  <textarea
+                    className="pi-input"
+                    placeholder="How does your idea solve the problem? What's your approach?"
+                    rows="3"
+                    value={solution}
+                    onChange={(e) => setSolution(e.target.value)}
+                    required
+                    style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                  />
+                </div>
+
+                {/* Target Audience */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Target Audience *</label>
+                  <input
+                    className="pi-input"
+                    placeholder="Who will benefit from this idea? (e.g., Students, Small businesses)"
+                    type="text"
+                    value={targetAudience}
+                    onChange={(e) => setTargetAudience(e.target.value)}
+                    required
+                  />
+                </div>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                {/* Requirements */}
+                <div className="pi-input-group">
+                  <label className="pi-label">Requirements</label>
+                  <textarea
+                    className="pi-input"
+                    placeholder="Technical requirements, resources, or tools needed for this idea"
+                    rows="3"
+                    value={requirements}
+                    onChange={(e) => setRequirements(e.target.value)}
+                    style={{ resize: 'vertical', fontFamily: 'inherit' }}
+                  />
+                </div>
+
+                {/* Prototype URL */}
+                <div className="pi-input-group">
+                  <label className="pi-label">
+                    <span>Prototype / Demo Link</span>
+                    <span className="pi-char-count">Optional</span>
+                  </label>
+                  <input
+                    className="pi-input"
+                    placeholder="https://your-prototype-link.com"
+                    type="url"
+                    value={prototypeUrl}
+                    onChange={(e) => setPrototypeUrl(e.target.value)}
+                  />
+                </div>
+
+                {/* Team Members */}
+                <div className="pi-input-group">
+                  <label className="pi-label">
+                    <span>Existing Team Members</span>
+                    <span className="pi-char-count">Optional</span>
+                  </label>
+
+                  {/* Added Members */}
+                  {teamMembers.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      {teamMembers.map((member, idx) => (
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', background: '#f1f5f9', borderRadius: '8px' }}>
+                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #2563eb, #7c3aed)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0 }}>
+                            {member.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <span style={{ fontWeight: '600', fontSize: '0.9rem', color: '#0f172a' }}>{member.name}</span>
+                            <span style={{ color: '#64748b', fontSize: '0.8rem', marginLeft: '0.5rem' }}>— {member.role}</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(idx)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex', padding: '0.25rem' }}
+                          >
+                            <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>close</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add Member Inputs */}
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
+                    <input
+                      className="pi-input"
+                      placeholder="Name"
+                      type="text"
+                      value={newMemberName}
+                      onChange={(e) => setNewMemberName(e.target.value)}
+                      style={{ flex: 1 }}
+                    />
+                    <input
+                      className="pi-input"
+                      placeholder="Role (e.g., Frontend Dev)"
+                      type="text"
+                      value={newMemberRole}
+                      onChange={(e) => setNewMemberRole(e.target.value)}
+                      style={{ flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddMember}
+                      style={{ padding: '0.7rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
                     >
-                      close
-                    </span>
+                      <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>person_add</span>
+                    </button>
                   </div>
-                ))}
-                
-                <input 
-                  className="pi-skill-input" 
-                  placeholder="Add skill... (Press Enter)" 
-                  type="text" 
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={handleAddSkill}
-                />
-              </div>
-            </div>
+                </div>
+              </>
+            )}
 
             {/* Actions */}
             <div className="pi-actions">
               {error && <p style={{ color: 'red', marginRight: 'auto', fontSize: '0.9rem', width: '100%' }}>{error}</p>}
-              <button 
-                type="button" 
-                className="pi-btn-cancel"
-                onClick={() => navigate('/dashboard')}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button type="submit" className="pi-btn-submit" disabled={loading}>
-                {loading ? 'Launching...' : 'Launch Idea to Marketplace'}
-                <span className="material-symbols-outlined">rocket_launch</span>
-              </button>
+
+              {step === 2 && (
+                <button
+                  type="button"
+                  className="pi-btn-cancel"
+                  onClick={() => setStep(1)}
+                  disabled={loading}
+                >
+                  ← Back
+                </button>
+              )}
+
+              {step === 1 && (
+                <button
+                  type="button"
+                  className="pi-btn-cancel"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  Cancel
+                </button>
+              )}
+
+              {step === 1 ? (
+                <button type="submit" className="pi-btn-submit">
+                  Continue
+                  <span className="material-symbols-outlined">arrow_forward</span>
+                </button>
+              ) : (
+                <button type="submit" className="pi-btn-submit" disabled={loading}>
+                  {loading ? 'Launching...' : 'Submit Idea for Review'}
+                  <span className="material-symbols-outlined">rocket_launch</span>
+                </button>
+              )}
             </div>
           </form>
         </section>

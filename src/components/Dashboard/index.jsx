@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { useUserStore, useIdeaStore, useEventStore } from '../../store';
 import TopHeader from '../header/TopHeader';
@@ -15,12 +15,14 @@ import '../../design/dashboard.css';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { tab, itemId } = useParams();
+  const activeTab = tab || 'marketplace';
+  
   // UI State
   const [selectedProject, setSelectedProject] = useState(null);
-  const [activeTab, setActiveTab] = useState('marketplace');
   const [isApplying, setIsApplying] = useState(false);
   const [applyForm, setApplyForm] = useState({ linkedin: '', bio: '', reason: '' });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
 
   // Global State
   const { currentUser, currentUserProfile, fetchUser } = useUserStore();
@@ -35,16 +37,35 @@ export default function Dashboard() {
     fetchEvents();
   }, [fetchUser, fetchIdeas, fetchEvents]);
 
+  // Redirect admins to /admin
+  useEffect(() => {
+    if (currentUserProfile && isAdmin) {
+      navigate('/admin', { replace: true });
+    }
+  }, [currentUserProfile, isAdmin]);
+
+  // Sync selectedProject with URL itemId
+  useEffect(() => {
+    if (itemId && ['marketplace', 'your-ideas', 'manage-ideas'].includes(activeTab)) {
+      const project = projects.find(p => p.id === itemId);
+      if (project) {
+        setSelectedProject(project);
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      setSelectedProject(null);
+      document.body.style.overflow = 'auto';
+    }
+  }, [itemId, activeTab, projects]);
+
   const handleOpenDrawer = (project) => {
-    setSelectedProject(project);
-    document.body.style.overflow = 'hidden';
+    navigate(`/dashboard/${activeTab}/${project.id}`);
   };
 
   const handleCloseDrawer = () => {
-    setSelectedProject(null);
     setIsApplying(false);
     setApplyForm({ linkedin: '', bio: '', reason: '' });
-    document.body.style.overflow = 'auto';
+    navigate(`/dashboard/${activeTab}`);
   };
 
   const submitApplication = async (e) => {
@@ -77,7 +98,7 @@ export default function Dashboard() {
       case 'marketplace':
         return <Marketplace projects={projects} loading={loading} currentUser={currentUser} currentUserProfile={currentUserProfile} handleOpenDrawer={handleOpenDrawer} />;
       case 'your-ideas':
-        return <YourIdeas projects={projects} loading={loading} currentUser={currentUser} currentUserProfile={currentUserProfile} handleOpenDrawer={handleOpenDrawer} />;
+        return <YourIdeas projects={projects} loading={loading} currentUser={currentUser} currentUserProfile={currentUserProfile} handleOpenDrawer={handleOpenDrawer} fetchIdeas={fetchIdeas} />;
       case 'events':
         return <Events events={events} loadingEvents={loadingEvents} />;
       case 'manage-ideas':
@@ -96,22 +117,23 @@ export default function Dashboard() {
       {/* Sidebar */}
       <LeftSidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(t) => navigate(`/dashboard/${t}`)}
         isAdmin={isAdmin}
         isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
 
       {/* Main Content */}
-      <main className="fd-main" style={{ marginLeft: isSidebarOpen ? '16rem' : '0', width: isSidebarOpen ? 'calc(100% - 16rem)' : '100%', transition: 'all 0.3s ease', padding: 0 }}>
+      <main className={`fd-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <TopHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div style={{ padding: '0 2rem 2rem 2rem' }}>
+        <div style={{ padding: '0 1rem 2rem 1rem' }}>
           {/* Header Section */}
           <header className="fd-header">
             <div className="fd-header-content">
               <h1 className="fd-header-title">
                 Welcome Back, {currentUserProfile?.full_name ? currentUserProfile.full_name.split(' ')[0] : 'Innovator'}! <br />
-                <span>Let's build your legacy.</span>
+
               </h1>
               <p className="fd-header-text">You have {projects.filter(p => p.author_id === currentUser?.id).reduce((acc, p) => acc + (p.team_requests?.filter(req => req.status === 'pending').length || 0), 0)} pending team requests.</p>
             </div>

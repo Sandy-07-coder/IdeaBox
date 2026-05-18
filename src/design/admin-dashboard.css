@@ -1,22 +1,24 @@
 :root {
-  --ad-primary: #4a40e0;
-  --ad-primary-container: #9795ff;
-  --ad-on-primary-container: #14007e;
-  --ad-secondary: #6249b2;
-  --ad-secondary-container: #d8caff;
-  --ad-tertiary: #983772;
-  --ad-tertiary-container: #fd8bca;
+  --ad-primary: #2563eb;
+  --ad-primary-dim: #1d4ed8;
+  --ad-on-primary: #ffffff;
+  --ad-primary-container: #dbeafe;
+  --ad-on-primary-container: #1e3a8a;
+  --ad-secondary: #475569;
+  --ad-secondary-container: #f1f5f9;
+  --ad-tertiary: #0369a1;
+  --ad-tertiary-container: #e0f2fe;
   --ad-error: #b41340;
   --ad-error-container: #f74b6d;
-  --ad-surface: #f5f7f9;
+  --ad-surface: #f8fafc;
   --ad-surface-container-lowest: #ffffff;
-  --ad-surface-container-low: #eef1f3;
-  --ad-surface-container: #e5e9eb;
+  --ad-surface-container-low: #f1f5f9;
+  --ad-surface-container: #e2e8f0;
   --ad-surface-container-high: #dfe3e6;
-  --ad-on-surface: #2c2f31;
-  --ad-on-surface-variant: #595c5e;
-  --ad-outline: #747779;
-  --ad-outline-variant: #abadaf;
+  --ad-on-surface: #0f172a;
+  --ad-on-surface-variant: #475569;
+  --ad-outline: #94a3b8;
+  --ad-outline-variant: #cbd5e1;
   
   --ad-green-100: #dcfce7;
   --ad-green-200: #bbf7d0;

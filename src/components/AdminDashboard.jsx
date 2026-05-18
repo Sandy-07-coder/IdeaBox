@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { useUserStore, useIdeaStore } from '../store';
+import { useUserStore, useIdeaStore, useEventStore } from '../store';
 import ManageIdeas from './Dashboard/ManageIdeas';
 import ProjectDrawer from './Dashboard/ProjectDrawer';
 import TopHeader from './header/TopHeader';
+import AdminEvents from './Admin/AdminEvents';
+import AdminUsers from './Admin/AdminUsers';
+import Messages from './Dashboard/Messages';
+import AdminNotifications from './Admin/AdminNotifications';
 import '../design/dashboard.css';
 
 export default function AdminDashboard() {
+  const { tab, itemId } = useParams();
   const navigate = useNavigate();
   const { currentUser, currentUserProfile, fetchUser } = useUserStore();
   const { projects, loadingIdeas: loading, fetchIdeas } = useIdeaStore();
+  const { events, fetchEvents, refreshEvents } = useEventStore();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [activeAdminTab, setActiveAdminTab] = useState('manage-ideas');
   const [selectedProject, setSelectedProject] = useState(null);
   const [isApplying, setIsApplying] = useState(false);
   const [applyForm, setApplyForm] = useState({ linkedin: '', bio: '', reason: '' });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
 
   // Stats
   const [stats, setStats] = useState({ totalUsers: 0, totalIdeas: 0, pendingApprovals: 0, approvedIdeas: 0 });
@@ -25,7 +30,18 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchUser();
     fetchIdeas();
-  }, [fetchUser, fetchIdeas]);
+    fetchEvents();
+  }, [fetchUser, fetchIdeas, fetchEvents]);
+
+  // Sync selectedProject with URL itemId
+  useEffect(() => {
+    if (itemId && ['manage-ideas', 'overview'].includes(tab)) {
+      const p = projects.find(x => x.id === itemId);
+      if (p) setSelectedProject(p);
+    } else {
+      setSelectedProject(null);
+    }
+  }, [itemId, projects, tab]);
 
   // Compute stats from real data
   useEffect(() => {
@@ -40,12 +56,12 @@ export default function AdminDashboard() {
   }, [projects]);
 
   const handleOpenDrawer = (project) => {
-    setSelectedProject(project);
+    navigate(`/admin/${tab}/${project.id}`);
     document.body.style.overflow = 'hidden';
   };
 
   const handleCloseDrawer = () => {
-    setSelectedProject(null);
+    navigate(`/admin/${tab}`);
     setIsApplying(false);
     setApplyForm({ linkedin: '', bio: '', reason: '' });
     document.body.style.overflow = 'auto';
@@ -63,8 +79,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="fd-container" style={{ overflowX: 'hidden' }}>
+      <div className={`fd-sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
       {/* Admin Sidebar */}
-      <aside className="fd-sidebar" style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)', transition: 'transform 0.3s ease', zIndex: 50 }}>
+      <aside className="fd-sidebar" style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
         <div className="fd-sidebar-header">
           <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#4F46E5', fontVariationSettings: "'FILL' 1" }}>verified_user</span>
           <span className="fd-brand">ADMIN PANEL</span>
@@ -72,36 +89,52 @@ export default function AdminDashboard() {
 
         <nav className="fd-nav">
           <a
-            className={`fd-nav-item ${activeAdminTab === 'overview' ? 'active' : ''}`}
+            className={`fd-nav-item ${tab === 'overview' ? 'active' : ''}`}
             href="#"
-            onClick={(e) => { e.preventDefault(); setActiveAdminTab('overview'); }}
+            onClick={(e) => { e.preventDefault(); navigate('/admin/overview'); }}
           >
             <span className="material-symbols-outlined">dashboard</span>
             <span>Overview</span>
           </a>
           <a
-            className={`fd-nav-item ${activeAdminTab === 'manage-ideas' ? 'active' : ''}`}
+            className={`fd-nav-item ${tab === 'manage-ideas' ? 'active' : ''}`}
             href="#"
-            onClick={(e) => { e.preventDefault(); setActiveAdminTab('manage-ideas'); }}
+            onClick={(e) => { e.preventDefault(); navigate('/admin/manage-ideas'); }}
           >
             <span className="material-symbols-outlined">settings_suggest</span>
             <span>Manage Ideas</span>
           </a>
           <a
-            className={`fd-nav-item ${activeAdminTab === 'users' ? 'active' : ''}`}
+            className={`fd-nav-item ${tab === 'events' ? 'active' : ''}`}
             href="#"
-            onClick={(e) => { e.preventDefault(); setActiveAdminTab('users'); }}
+            onClick={(e) => { e.preventDefault(); navigate('/admin/events'); }}
+          >
+            <span className="material-symbols-outlined">event</span>
+            <span>Events</span>
+          </a>
+          <a
+            className={`fd-nav-item ${tab === 'users' ? 'active' : ''}`}
+            href="#"
+            onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }}
           >
             <span className="material-symbols-outlined">group</span>
             <span>Users</span>
           </a>
           <a
-            className="fd-nav-item"
+            className={`fd-nav-item ${tab === 'messages' ? 'active' : ''}`}
             href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/dashboard'); }}
+            onClick={(e) => { e.preventDefault(); navigate('/admin/messages'); }}
           >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span>Back to Dashboard</span>
+            <span className="material-symbols-outlined">chat</span>
+            <span>Messages</span>
+          </a>
+          <a
+            className={`fd-nav-item ${tab === 'notifications' ? 'active' : ''}`}
+            href="#"
+            onClick={(e) => { e.preventDefault(); navigate('/admin/notifications'); }}
+          >
+            <span className="material-symbols-outlined">campaign</span>
+            <span>Send Notifications</span>
           </a>
         </nav>
 
@@ -114,10 +147,10 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="fd-main" style={{ marginLeft: isSidebarOpen ? '16rem' : '0', width: isSidebarOpen ? 'calc(100% - 16rem)' : '100%', transition: 'all 0.3s ease', padding: 0 }}>
+      <main className={`fd-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <TopHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div style={{ padding: '0 2rem 2rem 2rem' }}>
+        <div style={{ padding: '0 1rem 2rem 1rem' }}>
           {/* Admin Header */}
           <header className="fd-header">
             <div className="fd-header-content">
@@ -130,7 +163,7 @@ export default function AdminDashboard() {
           </header>
 
           {/* Stats Cards */}
-          {activeAdminTab === 'overview' && (
+          {tab === 'overview' && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -171,7 +204,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Overview - Recent pending ideas */}
-          {activeAdminTab === 'overview' && (
+          {tab === 'overview' && (
             <section>
               <div className="fd-section-header">
                 <h2 className="fd-section-title">Recent Pending Ideas</h2>
@@ -212,7 +245,7 @@ export default function AdminDashboard() {
           )}
 
           {/* Manage Ideas Tab */}
-          {activeAdminTab === 'manage-ideas' && (
+          {tab === 'manage-ideas' && (
             <ManageIdeas
               projects={projects}
               loading={loading}
@@ -222,20 +255,28 @@ export default function AdminDashboard() {
             />
           )}
 
-          {/* Users Tab - Placeholder */}
-          {activeAdminTab === 'users' && (
-            <section>
-              <div className="fd-section-header">
-                <h2 className="fd-section-title">Platform Users</h2>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 2rem', background: '#fff', borderRadius: '12px', border: '1px dashed #e5e7eb', marginTop: '1rem' }}>
-                <span className="material-symbols-outlined" style={{ fontSize: '4rem', color: '#d1d5db', marginBottom: '1rem' }}>manage_accounts</span>
-                <h3 style={{ color: '#111827', margin: '0 0 0.5rem 0', fontSize: '1.5rem', fontWeight: '600' }}>User Management</h3>
-                <p style={{ color: '#6b7280', margin: 0, textAlign: 'center', maxWidth: '400px', lineHeight: '1.5' }}>
-                  Full user verification and management features are coming soon. Currently, you can view user profiles by clicking on idea founders.
-                </p>
-              </div>
-            </section>
+          {/* Events Tab */}
+          {tab === 'events' && (
+            <AdminEvents 
+              events={events}
+              refreshEvents={refreshEvents}
+              currentUser={currentUser}
+            />
+          )}
+
+          {/* Users Tab */}
+          {tab === 'users' && (
+            <AdminUsers />
+          )}
+
+          {/* Messages Tab */}
+          {tab === 'messages' && (
+            <Messages />
+          )}
+
+          {/* Notifications Tab */}
+          {tab === 'notifications' && (
+            <AdminNotifications />
           )}
         </div>
       </main>
@@ -244,7 +285,7 @@ export default function AdminDashboard() {
       <ProjectDrawer
         selectedProject={selectedProject}
         handleCloseDrawer={handleCloseDrawer}
-        activeTab="manage-ideas"
+        activeTab={tab}
         currentUser={currentUser}
         currentUserProfile={currentUserProfile}
         fetchIdeas={fetchIdeas}

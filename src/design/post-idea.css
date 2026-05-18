@@ -1,19 +1,19 @@
 :root {
-  --pi-primary: #4a40e0;
-  --pi-primary-dim: #3d30d4;
-  --pi-primary-container: #9795ff;
-  --pi-on-primary-container: #14007e;
-  --pi-tertiary-container: #fd8bca;
-  --pi-on-tertiary-container: #610244;
+  --pi-primary: #2563eb;
+  --pi-primary-dim: #1d4ed8;
+  --pi-primary-container: #dbeafe;
+  --pi-on-primary-container: #1e3a8a;
+  --pi-tertiary-container: #e0f2fe;
+  --pi-on-tertiary-container: #0369a1;
   --pi-surface-container-lowest: #ffffff;
-  --pi-surface-container-low: #eef1f3;
-  --pi-surface-container: #e5e9eb;
+  --pi-surface-container-low: #f1f5f9;
+  --pi-surface-container: #e2e8f0;
   --pi-surface-container-high: #dfe3e6;
-  --pi-background: #f5f7f9;
-  --pi-inverse-surface: #0b0f10;
-  --pi-outline-variant: #abadaf;
-  --pi-on-surface: #2c2f31;
-  --pi-on-surface-variant: #595c5e;
+  --pi-background: #f8fafc;
+  --pi-inverse-surface: #0f172a;
+  --pi-outline-variant: #cbd5e1;
+  --pi-on-surface: #0f172a;
+  --pi-on-surface-variant: #475569;
 }
 
 .post-idea-wrapper {

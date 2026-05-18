@@ -28,6 +28,11 @@ export default function ViewProfile() {
   const [role, setRole] = useState('');
   const [userRole, setUserRole] = useState('regular');
 
+  // Reset body scroll in case we navigated here from a modal that locked it
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+  }, []);
+
   useEffect(() => {
     if (!currentUser && !loadingAuth) {
       fetchUser();
@@ -400,10 +405,26 @@ export default function ViewProfile() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                {isOwnProfile && (
+                {isOwnProfile ? (
                   <button onClick={() => setIsEditing(true)} style={{ padding: '0.75rem 1.5rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>edit</span>
                     Edit Profile
+                  </button>
+                ) : (
+                  <button 
+                    onClick={async () => {
+                      if (!currentUser?.id) return alert('Please log in first');
+                      const { useChatStore } = await import('../store/chatStore');
+                      const { startConversation } = useChatStore.getState();
+                      const convId = await startConversation(currentUser.id, profileId);
+                      if (convId) {
+                        navigate(`/dashboard/messages/${convId}`);
+                      }
+                    }}
+                    style={{ padding: '0.75rem 1.5rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '1.2rem' }}>chat</span>
+                    Message
                   </button>
                 )}
               </div>

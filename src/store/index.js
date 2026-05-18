@@ -5,8 +5,8 @@ export const useUserStore = create((set) => ({
   currentUser: null,
   currentUserProfile: null,
   loadingAuth: true,
-  fetchUser: async () => {
-    set({ loadingAuth: true });
+  fetchUser: async (silent = false) => {
+    if (!silent) set({ loadingAuth: true });
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
@@ -25,7 +25,7 @@ export const useIdeaStore = create((set, get) => ({
     set({ loadingIdeas: true });
     const { data, error } = await supabase
       .from('ideas')
-      .select('*, profiles!ideas_author_id_fkey(full_name, mobile_number, persona), admin_profile:profiles!ideas_approved_by_fkey(full_name), team_requests(*, profiles!team_requests_user_id_fkey(full_name, mobile_number, email))')
+      .select('*, profiles!ideas_author_id_fkey(full_name, email, mobile_number, persona, avatar_url), admin_profile:profiles!ideas_approved_by_fkey(full_name), team_requests(*, profiles!team_requests_user_id_fkey(full_name, mobile_number, email))')
       .order('created_at', { ascending: false });
     
     if (!error && data) {

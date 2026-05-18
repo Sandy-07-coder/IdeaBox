@@ -18,7 +18,7 @@ export default function Login() {
     setLoading(true);
     setError(null);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -29,8 +29,28 @@ export default function Login() {
       return;
     }
 
-    setLoading(false);
-    navigate('/dashboard'); // Change this if you have a different authenticated route
+    // Check if profile is complete
+    if (authData?.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('institution_name, terms_agreed, user_role')
+        .eq('id', authData.user.id)
+        .maybeSingle();
+
+      setLoading(false);
+
+      if (profile?.user_role === 'admin') {
+        navigate('/admin');
+      } else if (profile && (profile.institution_name || profile.terms_agreed)) {
+        navigate('/dashboard');
+      } else {
+        // Profile incomplete, send to signup page (step 3)
+        navigate('/signup');
+      }
+    } else {
+      setLoading(false);
+      navigate('/dashboard');
+    }
   };
 
   const handleGoogleSignIn = async (e) => {

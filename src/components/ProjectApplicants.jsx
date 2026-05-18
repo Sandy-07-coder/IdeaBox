@@ -27,17 +27,27 @@ export default function ProjectApplicants() {
     fetchProjectData();
   }, [id]);
 
-  const handleRequestAction = async (requestId, status) => {
+  const handleRequestAction = async (req, status) => {
     const { error } = await supabase
       .from('team_requests')
       .update({ status })
-      .eq('id', requestId);
+      .eq('id', req.id);
       
     if (error) {
       alert(error.message);
     } else {
       alert(`Request ${status} successfully!`);
       fetchProjectData();
+      
+      // Send notification
+      const { sendNotification } = await import('../store/notificationStore').then(m => m.useNotificationStore.getState());
+      await sendNotification({
+        userId: req.user_id,
+        title: `Application ${status === 'accepted' ? 'Accepted' : 'Rejected'}`,
+        message: `Your application to join "${project.project_title}" was ${status}.`,
+        type: 'application',
+        link: `/dashboard/marketplace/${project.id}`
+      });
     }
   };
 
@@ -110,16 +120,16 @@ export default function ProjectApplicants() {
 
                     <div style={{ display: 'flex', gap: '1rem' }}>
                       <button 
-                        onClick={() => handleRequestAction(req.id, 'accepted')}
+                        onClick={() => handleRequestAction(req, 'accepted')}
                         style={{ flex: 1, padding: '0.75rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
                       >
-                        <span className="material-symbols-outlined">check_circle</span> Accept Applicant
+                        <span className="material-symbols-outlined">check_circle</span> Accept
                       </button>
                       <button 
-                        onClick={() => handleRequestAction(req.id, 'rejected')}
-                        style={{ flex: 1, padding: '0.75rem', background: '#fff', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                        onClick={() => handleRequestAction(req, 'rejected')}
+                        style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#4b5563', border: '1px solid #d1d5db', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
                       >
-                        <span className="material-symbols-outlined">cancel</span> Reject Applicant
+                        <span className="material-symbols-outlined">cancel</span> Reject
                       </button>
                     </div>
                   </div>
