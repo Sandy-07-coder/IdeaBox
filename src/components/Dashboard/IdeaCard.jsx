@@ -69,18 +69,53 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
+/* Status icons */
+const LightbulbIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="9" y1="18" x2="15" y2="18" />
+    <line x1="10" y1="22" x2="14" y2="22" />
+    <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A7 7 0 1 0 6.5 11.5c.76.76 1.23 1.52 1.41 2.5" />
+  </svg>
+);
+
+const FlaskIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 3h6M9 3v7l-5 9a1 1 0 0 0 .9 1.5h14.2a1 1 0 0 0 .9-1.5L15 10V3" />
+    <line x1="6.5" y1="15" x2="17.5" y2="15" />
+  </svg>
+);
+
+const RocketIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2a2.99 2.99 0 1 0-3-3Z" />
+    <path d="M12 2S7 7 7 13l4 4c6 0 11-5 11-11-2-2-6-4-10-4Z" />
+    <circle cx="14.5" cy="9.5" r="1" fill="currentColor" stroke="none" />
+  </svg>
+);
+
+/* ─── Status badge config ──────────────────────────────────────────────────── */
+const STATUS_CONFIG = {
+  'Just an Idea':    { icon: <LightbulbIcon />, bg: '#fef9c3', color: '#854d0e' }, // amber-100 / amber-800
+  'Prototype Ready': { icon: <FlaskIcon />,     bg: '#e0e7ff', color: '#3730a3' }, // indigo-100 / indigo-800
+  'MVP Built':       { icon: <RocketIcon />,    bg: '#dcfce7', color: '#166534' }, // green-100 / green-800
+};
+
 /* ─── Component ────────────────────────────────────────────────────────────── */
 export default function IdeaCard({ project, onClick, activeTab, currentUser, currentUserProfile, onHire, onStopHire, onEditHire }) {
-  const getBadgeType = (status) => {
-    if (status === 'MVP Built') return 'primary';
-    if (status === 'Prototype Ready') return 'secondary';
-    return 'tertiary';
-  };
-
   const requestsCount = project.team_requests?.filter(req => req.status === 'pending').length || 0;
 
   const descText = project.description || project.elevator_pitch || '';
   const shortDesc = descText.length > 120 ? descText.substring(0, 120) + '...' : descText;
+
+  // Resolve status badge config; fall back gracefully for unknown statuses
+  const statusCfg = STATUS_CONFIG[project.project_status] ?? {
+    icon: <LightbulbIcon />,
+    bg: '#f3f4f6',
+    color: '#374151',
+  };
 
   return (
     <div
@@ -120,12 +155,21 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
 
       <div className="fd-card-topline" />
       <div className="fd-card-header">
-        <span className={`fd-badge ${getBadgeType(project.project_status)}`}>
+        {/* Status badge — icon + label in a self-contained pill */}
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: '5px',
+          padding: '0.28rem 0.7rem', borderRadius: '20px',
+          fontSize: '0.72rem', fontWeight: '700',
+          textTransform: 'uppercase', letterSpacing: '0.04em',
+          background: statusCfg.bg, color: statusCfg.color,
+        }}>
+          {statusCfg.icon}
           {project.project_status}
         </span>
       </div>
       <h3 className="fd-card-title">{project.project_title}</h3>
-      <p className="fd-card-desc">{shortDesc}</p>
+      {/* Extra bottom margin separates description from metadata / buttons */}
+      <p className="fd-card-desc" style={{ marginBottom: '1.25rem' }}>{shortDesc}</p>
 
       {/* ── Pending requests count ──────────────────────────────────────── */}
       {activeTab === 'your-ideas' && (
@@ -136,13 +180,23 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
       )}
 
       {/* ── Hiring chips (marketplace) ──────────────────────────────────── */}
+      {/* Both chips share the same neutral palette: #374151 on #f3f4f6.
+           #374151 on #f3f4f6 gives ~7.5:1 contrast — well above WCAG AA.      */}
       {activeTab === 'marketplace' && project.is_hiring && (
-        <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.75rem', color: '#4F46E5', background: '#e0e7ff', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: '500' }}>
+        <div style={{ marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <span style={{
+            fontSize: '0.75rem', fontWeight: '600',
+            color: '#374151', background: '#f3f4f6',
+            padding: '0.25rem 0.6rem', borderRadius: '4px',
+          }}>
             {project.hiring_openings} opening{project.hiring_openings !== 1 ? 's' : ''}
           </span>
           {project.hiring_commitment && (
-            <span style={{ fontSize: '0.75rem', color: '#6b7280', background: '#f3f4f6', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+            <span style={{
+              fontSize: '0.75rem', fontWeight: '600',
+              color: '#374151', background: '#f3f4f6',
+              padding: '0.25rem 0.6rem', borderRadius: '4px',
+            }}>
               {project.hiring_commitment}
             </span>
           )}
@@ -159,8 +213,11 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
               style={{
                 flex: 1, margin: 0,
                 background: '#1d4ed8', color: '#ffffff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                transition: 'background-color 0.15s ease',
               }}
+              onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+              onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
             >
               View Details
               <ArrowRightIcon />
@@ -222,8 +279,11 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
             style={{
               width: '100%', margin: 0,
               background: '#1d4ed8', color: '#ffffff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              transition: 'background-color 0.15s ease',
             }}
+            onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+            onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
           >
             View Details
             <ArrowRightIcon />

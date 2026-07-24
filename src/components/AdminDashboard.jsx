@@ -156,7 +156,7 @@ export default function AdminDashboard() {
             <div className="fd-header-content">
               <h1 className="fd-header-title">
                 Admin Dashboard <br />
-                <span>Manage ideas, users, and platform health.</span>
+
               </h1>
               <p className="fd-header-text">{stats.pendingApprovals} ideas pending approval.</p>
             </div>
@@ -257,7 +257,7 @@ export default function AdminDashboard() {
 
           {/* Events Tab */}
           {tab === 'events' && (
-            <AdminEvents 
+            <AdminEvents
               events={events}
               refreshEvents={refreshEvents}
               currentUser={currentUser}
