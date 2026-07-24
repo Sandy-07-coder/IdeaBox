@@ -38,7 +38,7 @@ const LandingPage = () => {
                 <span className="material-symbols-outlined">account_circle</span>
               </button>
             </div>
-            <button className="btn-primary" onClick={() => navigate('/signup')}>Pitch Idea</button>
+            <button className="btn-primary" onClick={() => navigate('/login')}>Pitch Idea</button>
           </div>
         </div>
       </nav>
@@ -51,13 +51,13 @@ const LandingPage = () => {
               <span>Spring Cohort Open</span>
             </div>
             <h1 className="hero-title">
-              Pitch Ideas.<br/>Find Teammates.<br/><span className="highlight-text">Build the Future.</span>
+              Pitch Ideas.<br />Find Teammates.<br /><span className="highlight-text">Build the Future.</span>
             </h1>
             <p className="hero-description">
               The University Idea Lab is where academic rigor meets startup execution. Connect with brilliant minds across campus, form interdisciplinary teams, and turn your spark into a blueprint.
             </p>
             <div className="hero-buttons">
-              <button className="btn-primary flex-btn" onClick={() => navigate('/signup')}>
+              <button className="btn-primary flex-btn" onClick={() => navigate('/login')}>
                 Pitch Your Idea
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
@@ -67,7 +67,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="hero-image-wrapper">
-            <img alt="Students collaborating" className="hero-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1WxztuWZRVuup_XfoKwJIJvpY9G5zh_GNUSQSk_eoGjJyI17QBAXS_dhdrHtSaZesamp8xNJAThYw07Byct2DUKOjzcGUx6M6wSh32K7_UHtyL9eBAkfvJ-ufe2MaLxrVLvG0YcKcyc6tY8v3sVrg4atnhvxrBexXUfYeigVKwKIRZX4HP2FjRmmb9_eCPrinoWZt2T1k9qky0EFSY8Gc8D3dsy8ieK6CDkuZSe3f63hoq_Ar3dbQP8KgfEc2JyaPZWpl5rdzaNY"/>
+            <img alt="Students collaborating" className="hero-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1WxztuWZRVuup_XfoKwJIJvpY9G5zh_GNUSQSk_eoGjJyI17QBAXS_dhdrHtSaZesamp8xNJAThYw07Byct2DUKOjzcGUx6M6wSh32K7_UHtyL9eBAkfvJ-ufe2MaLxrVLvG0YcKcyc6tY8v3sVrg4atnhvxrBexXUfYeigVKwKIRZX4HP2FjRmmb9_eCPrinoWZt2T1k9qky0EFSY8Gc8D3dsy8ieK6CDkuZSe3f63hoq_Ar3dbQP8KgfEc2JyaPZWpl5rdzaNY" />
             <div className="hero-image-gradient"></div>
           </div>
         </div>
@@ -139,7 +139,7 @@ const LandingPage = () => {
             <span className="section-pre-title">Who we are</span>
             <h2 className="section-title">Meet Our Team</h2>
           </div>
-          
+
           {/* Core Team */}
           <div className="team-group">
             <h3 className="team-group-title">Core Team</h3>
