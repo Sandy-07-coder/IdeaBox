@@ -5,6 +5,7 @@ import MessagesDropdown from './MessagesDropdown';
 import { useUserStore } from '../../store';
 import { useChatStore } from '../../store/chatStore';
 import { useNotificationStore } from '../../store/notificationStore';
+import { supabase } from '../../supabaseClient';
 
 export default function TopHeader({ toggleSidebar }) {
   const { currentUser, currentUserProfile } = useUserStore();
@@ -16,29 +17,31 @@ export default function TopHeader({ toggleSidebar }) {
   } = useNotificationStore();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const headerRef = useRef(null);
-  const globalSubRef = useRef(null);
 
-  // Fetch unread count and subscribe to global messages
+  // Subscribe to global messages + notifications.
+  // A fresh channel pair is created on every run; both are torn down in the
+  // cleanup so React Strict Mode's double-invoke never sees a channel that is
+  // already subscribed when it tries to add postgres_changes listeners.
   useEffect(() => {
-    if (currentUser?.id) {
-      fetchUnreadCount(currentUser.id);
-      fetchNotifications(currentUser.id);
-      updatePresence(currentUser.id, true);
+    if (!currentUser?.id) return;
 
-      if (!globalSubRef.current) {
-        globalSubRef.current = subscribeToGlobalMessages(currentUser.id);
-      }
-      
-      const notifSub = subscribeToNotifications(currentUser.id);
+    fetchUnreadCount(currentUser.id);
+    fetchNotifications(currentUser.id);
+    updatePresence(currentUser.id, true);
 
-      // Set offline on page unload
-      const handleUnload = () => updatePresence(currentUser.id, false);
-      window.addEventListener('beforeunload', handleUnload);
-      return () => {
-        window.removeEventListener('beforeunload', handleUnload);
-        if (notifSub) notifSub.unsubscribe();
-      };
-    }
+    const globalMsgChannel = subscribeToGlobalMessages(currentUser.id);
+    const notifChannel     = subscribeToNotifications(currentUser.id);
+
+    // Set offline on page unload
+    const handleUnload = () => updatePresence(currentUser.id, false);
+    window.addEventListener('beforeunload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      // supabase.removeChannel() is the correct Supabase JS v2 teardown API
+      if (globalMsgChannel) supabase.removeChannel(globalMsgChannel);
+      if (notifChannel)     supabase.removeChannel(notifChannel);
+    };
   }, [currentUser?.id, fetchUnreadCount, fetchNotifications, subscribeToNotifications, subscribeToGlobalMessages, updatePresence]);
 
   useEffect(() => {
