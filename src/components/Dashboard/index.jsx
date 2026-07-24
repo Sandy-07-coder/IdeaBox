@@ -26,7 +26,7 @@ export default function Dashboard() {
 
   // Global State
   const { currentUser, currentUserProfile, fetchUser } = useUserStore();
-  const { projects, loadingIdeas: loading, fetchIdeas } = useIdeaStore();
+  const { projects, loadingIdeas: loading, fetchIdeas, fetchIdeaDetails } = useIdeaStore();
   const { events, loadingEvents, fetchEvents } = useEventStore();
 
   const isAdmin = currentUserProfile?.user_role === 'admin';
@@ -45,11 +45,15 @@ export default function Dashboard() {
   }, [currentUserProfile, isAdmin]);
 
   // Sync selectedProject with URL itemId
+  // On direct URL load the store action is called with the correct role once
+  // the user profile is available.
   useEffect(() => {
     if (itemId && ['marketplace', 'your-ideas', 'manage-ideas'].includes(activeTab)) {
-      const project = projects.find(p => p.id === itemId);
-      if (project) {
-        setSelectedProject(project);
+      const cached = projects.find(p => p.id === itemId);
+      if (cached && !selectedProject) {
+        // Viewer role might not be resolved yet on first render; prefer cache
+        // while we wait. The full fetch is triggered by handleOpenDrawer.
+        setSelectedProject(cached);
         document.body.style.overflow = 'hidden';
       }
     } else {
@@ -58,7 +62,15 @@ export default function Dashboard() {
     }
   }, [itemId, activeTab, projects]);
 
-  const handleOpenDrawer = (project) => {
+  const handleOpenDrawer = async (project) => {
+    // Determine viewer role BEFORE fetching so we pick the right query
+    let viewerRole = 'public';
+    if (currentUser?.id === project.author_id) viewerRole = 'owner';
+    else if (isAdmin) viewerRole = 'admin';
+
+    // Fetch enriched details server-side scoped to role, then navigate
+    const details = await fetchIdeaDetails(project.id, viewerRole);
+    if (details) setSelectedProject(details);
     navigate(`/dashboard/${activeTab}/${project.id}`);
   };
 
@@ -161,6 +173,7 @@ export default function Dashboard() {
         applyForm={applyForm}
         setApplyForm={setApplyForm}
         submitApplication={submitApplication}
+        viewerRole={selectedProject?._viewerRole ?? 'public'}
       />
     </div>
   );

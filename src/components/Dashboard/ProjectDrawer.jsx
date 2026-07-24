@@ -15,9 +15,13 @@ export default function ProjectDrawer({
   applyForm,
   setApplyForm,
   submitApplication,
+  viewerRole = 'public',   // 'owner' | 'admin' | 'public'
 }) {
   const navigate = useNavigate();
   const isAdmin = currentUserProfile?.user_role === 'admin';
+
+  // Single source of truth for visibility gating
+  const isPrivileged = viewerRole === 'owner' || viewerRole === 'admin';
 
   const getBadgeType = (status) => {
     if (status === 'MVP Built') return 'primary';
@@ -100,8 +104,11 @@ export default function ProjectDrawer({
             {/* Description */}
             <p style={{ color: '#4b5563', lineHeight: '1.7', fontSize: '0.95rem', margin: '0 0 1.25rem 0' }}>{selectedProject.description || selectedProject.elevator_pitch}</p>
 
-            {/* Full Details — visible to admin or idea owner */}
-            {(isAdmin || selectedProject.author_id === currentUser?.id || activeTab !== 'marketplace') && (
+            {/* ── Full Details — owner / admin only ───────────────────────── */}
+            {/* These fields are also absent from the API response for public   */}
+            {/* viewers (the store sends a restricted select), so hiding in the */}
+            {/* DOM is a defence-in-depth measure, not the sole enforcement.    */}
+            {isPrivileged && (
               <>
                 {selectedProject.problem_statement && (
                   <div style={{ marginBottom: '1.25rem' }}>
@@ -150,6 +157,22 @@ export default function ProjectDrawer({
                   </div>
                 )}
               </>
+            )}
+
+            {/* ── Public-only: Apply CTA inline in body ────────────────────── */}
+            {/* Rendered only for public viewers so it is never duplicated in   */}
+            {/* the owner/admin view. The footer Apply button is suppressed for */}
+            {/* public viewers below, keeping a single CTA path per role.       */}
+            {!isPrivileged && selectedProject.is_hiring && selectedProject.author_id !== currentUser?.id && (
+              <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
+                <button
+                  onClick={() => setIsApplying(true)}
+                  style={{ width: '100%', padding: '0.85rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', boxShadow: '0 4px 14px rgba(79,70,229,0.35)' }}
+                >
+                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>work</span>
+                  Apply for Position
+                </button>
+              </div>
             )}
 
             {/* Meta Info */}
@@ -471,7 +494,10 @@ export default function ProjectDrawer({
 
           {/* Footer */}
           <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', gap: '0.75rem', position: 'sticky', bottom: 0, background: '#fff', borderRadius: '0 0 16px 16px' }}>
-            {activeTab === 'marketplace' && selectedProject.is_hiring && selectedProject.author_id !== currentUser?.id ? (
+            {/* Apply button only renders in the footer for privileged views      */}
+            {/* (owner / admin). Public viewers get the inline CTA in the body   */}
+            {/* above so the button is never duplicated.                          */}
+            {isPrivileged && activeTab === 'marketplace' && selectedProject.is_hiring && selectedProject.author_id !== currentUser?.id ? (
               <>
                 <button onClick={() => setIsApplying(true)} style={{ flex: 1, padding: '0.75rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                   <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>work</span>
@@ -481,7 +507,7 @@ export default function ProjectDrawer({
                   <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>share</span>
                 </button>
               </>
-            ) : activeTab === 'marketplace' ? (
+            ) : activeTab === 'marketplace' && isPrivileged ? (
               <button style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#6b7280', border: 'none', borderRadius: '8px', fontWeight: '500', fontSize: '0.9rem' }} disabled>
                 Not hiring right now
               </button>
