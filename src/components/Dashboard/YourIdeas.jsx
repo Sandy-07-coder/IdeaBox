@@ -3,7 +3,15 @@ import { supabase } from '../../supabaseClient';
 import IdeaCard from './IdeaCard';
 
 export default function YourIdeas({ projects, loading, currentUser, currentUserProfile, handleOpenDrawer, fetchIdeas }) {
-  if (!currentUser) return <p>Loading...</p>;
+  if (!currentUser) {
+    return (
+      <div className="w-full flex-1 flex flex-col items-center justify-center p-12 text-on-surface-variant font-body">
+        <span className="material-symbols-outlined text-6xl mb-4 text-outline-variant">person_off</span>
+        <h3 className="text-xl font-bold text-on-surface mb-2">Authentication Required</h3>
+        <p>Please log in to view and manage your posted ideas.</p>
+      </div>
+    );
+  }
   const userProjects = projects.filter(p => p.author_id === currentUser.id);
   const [hiringProject, setHiringProject] = useState(null);
   const [hiringForm, setHiringForm] = useState({ openings: 1, skills: [], commitment: '', newSkill: '' });
@@ -58,12 +66,15 @@ export default function YourIdeas({ projects, loading, currentUser, currentUserP
   };
 
   return (
-    <section>
-      <div className="fd-section-header">
-        <h2 className="fd-section-title">Your Ideas</h2>
+    <section className="w-full">
+      <div className="mb-8 lg:mb-12">
+        <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface mb-2">
+          Your Ideas
+        </h3>
+        <p className="text-on-surface-variant text-base lg:text-lg">Manage your projects, review applicants, and hire talent.</p>
       </div>
 
-      <div className="fd-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {loading ? (
           <p>Loading projects...</p>
         ) : userProjects.length === 0 ? (

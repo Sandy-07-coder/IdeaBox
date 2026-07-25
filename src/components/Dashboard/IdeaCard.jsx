@@ -119,10 +119,11 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
 
   return (
     <div
-      className="fd-card"
+      className="bg-surface-container-lowest rounded-xl p-6 ambient-shadow border border-outline-variant/10 cursor-pointer group hover:-translate-y-1 transition-all duration-300 relative flex flex-col gap-4 overflow-hidden"
       onClick={() => onClick(project)}
-      style={{ position: 'relative', cursor: 'pointer' }}
     >
+      {/* Featured top edge for Incubator style */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-primary sm:rounded-t-xl" />
       {/* ── Approval Badge ─────────────────────────────────────────────── */}
       {(activeTab === 'your-ideas' || activeTab === 'manage-ideas' || (!project.is_approved && currentUserProfile?.user_role === 'admin')) && (
         <div style={{
@@ -153,8 +154,8 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
         </div>
       )}
 
-      <div className="fd-card-topline" />
-      <div className="fd-card-header">
+      
+      <div className="flex flex-wrap items-start justify-between gap-2">
         {/* Status badge — icon + label in a self-contained pill */}
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -167,9 +168,9 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
           {project.project_status}
         </span>
       </div>
-      <h3 className="fd-card-title">{project.project_title}</h3>
+      <h3 className="font-headline font-black text-2xl tracking-tight text-on-surface leading-tight">{project.project_title}</h3>
       {/* Extra bottom margin separates description from metadata / buttons */}
-      <p className="fd-card-desc" style={{ marginBottom: '1.25rem' }}>{shortDesc}</p>
+      <p className="font-body text-sm text-on-surface-variant line-clamp-3 leading-relaxed mt-1">{shortDesc}</p>
 
       {/* ── Pending requests count ──────────────────────────────────────── */}
       {activeTab === 'your-ideas' && (
@@ -184,19 +185,11 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
            #374151 on #f3f4f6 gives ~7.5:1 contrast — well above WCAG AA.      */}
       {activeTab === 'marketplace' && project.is_hiring && (
         <div style={{ marginTop: '0.5rem', marginBottom: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span style={{
-            fontSize: '0.75rem', fontWeight: '600',
-            color: '#374151', background: '#f3f4f6',
-            padding: '0.25rem 0.6rem', borderRadius: '4px',
-          }}>
+          <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-md text-xs font-bold tracking-widest uppercase">
             {project.hiring_openings} opening{project.hiring_openings !== 1 ? 's' : ''}
           </span>
           {project.hiring_commitment && (
-            <span style={{
-              fontSize: '0.75rem', fontWeight: '600',
-              color: '#374151', background: '#f3f4f6',
-              padding: '0.25rem 0.6rem', borderRadius: '4px',
-            }}>
+            <span className="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-md text-xs font-bold tracking-widest uppercase">
               {project.hiring_commitment}
             </span>
           )}
@@ -209,15 +202,7 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
           <>
             {/* Primary: View Details */}
             <button
-              className="fd-details-btn"
-              style={{
-                flex: 1, margin: 0,
-                background: '#1d4ed8', color: '#ffffff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                transition: 'background-color 0.15s ease',
-              }}
-              onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-              onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+              className="flex-1 flex items-center justify-center gap-2 primary-gradient text-on-primary py-3 rounded-xl font-bold hover:shadow-xl shadow-primary/20 transition-all active:scale-[0.98]"
             >
               View Details
               <ArrowRightIcon />
@@ -275,15 +260,7 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
         ) : (
           /* Default: View Details (primary solid) */
           <button
-            className="fd-details-btn"
-            style={{
-              width: '100%', margin: 0,
-              background: '#1d4ed8', color: '#ffffff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              transition: 'background-color 0.15s ease',
-            }}
-            onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-            onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+            className="w-full flex items-center justify-center gap-2 primary-gradient text-on-primary py-3 rounded-xl font-bold hover:shadow-xl shadow-primary/20 transition-all active:scale-[0.98] mt-auto"
           >
             View Details
             <ArrowRightIcon />

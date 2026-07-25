@@ -77,90 +77,89 @@ export default function AdminDashboard() {
     return null;
   }
 
+  const getNavClass = (tabId) => {
+    return `flex items-center space-x-3 py-3 rounded-xl font-bold transition-all sidebar-item overflow-hidden ${
+      isSidebarOpen ? 'px-4 justify-start' : 'px-0 lg:justify-center px-4 justify-start'
+    } ${
+      tab === tabId
+        ? 'bg-primary/10 text-primary'
+        : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary'
+    }`;
+  };
+
   return (
-    <div className="fd-container" style={{ overflowX: 'hidden' }}>
-      <div className={`fd-sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} onClick={() => setIsSidebarOpen(false)}></div>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-surface font-body text-on-surface">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+
       {/* Admin Sidebar */}
-      <aside className="fd-sidebar" style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }}>
-        <div className="fd-sidebar-header">
-          <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#4F46E5', fontVariationSettings: "'FILL' 1" }}>verified_user</span>
-          <span className="fd-brand">ADMIN PANEL</span>
+      <aside 
+        className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-outline-variant/10 flex flex-col space-y-2 transition-all duration-300 ease-in-out lg:static lg:h-screen lg:shrink-0 
+          ${isSidebarOpen ? 'translate-x-0 w-64 p-6' : '-translate-x-full w-64 p-6 lg:translate-x-0 lg:w-[80px] lg:px-2 lg:py-6'}
+        `} 
+        id="sidebar"
+      >
+        <div className={`mb-8 flex items-center gap-2 sidebar-header ${isSidebarOpen ? 'justify-between lg:justify-start' : 'justify-between lg:justify-center'}`}>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span className="material-symbols-outlined text-primary text-3xl shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
+            <h1 className={`text-xl font-black tracking-tighter text-primary sidebar-logo-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>
+              ADMIN
+            </h1>
+          </div>
+          <button className="lg:hidden p-2 text-on-surface-variant" onClick={() => setIsSidebarOpen(false)}>
+            <span className="material-symbols-outlined">close</span>
+          </button>
         </div>
 
-        <nav className="fd-nav">
-          <a
-            className={`fd-nav-item ${tab === 'overview' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/overview'); }}
-          >
-            <span className="material-symbols-outlined">dashboard</span>
-            <span>Overview</span>
+        <nav className="flex-1 space-y-1 overflow-y-auto overflow-x-hidden">
+          <a className={getNavClass('overview')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/overview'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">dashboard</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Overview</span>
           </a>
-          <a
-            className={`fd-nav-item ${tab === 'manage-ideas' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/manage-ideas'); }}
-          >
-            <span className="material-symbols-outlined">settings_suggest</span>
-            <span>Manage Ideas</span>
+          <a className={getNavClass('manage-ideas')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/manage-ideas'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">settings_suggest</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Manage Ideas</span>
           </a>
-          <a
-            className={`fd-nav-item ${tab === 'events' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/events'); }}
-          >
-            <span className="material-symbols-outlined">event</span>
-            <span>Events</span>
+          <a className={getNavClass('events')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/events'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">event</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Events</span>
           </a>
-          <a
-            className={`fd-nav-item ${tab === 'users' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }}
-          >
-            <span className="material-symbols-outlined">group</span>
-            <span>Users</span>
+          <a className={getNavClass('users')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/users'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">group</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Users</span>
           </a>
-          <a
-            className={`fd-nav-item ${tab === 'messages' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/messages'); }}
-          >
-            <span className="material-symbols-outlined">chat</span>
-            <span>Messages</span>
+          <a className={getNavClass('messages')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/messages'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">chat</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Messages</span>
           </a>
-          <a
-            className={`fd-nav-item ${tab === 'notifications' ? 'active' : ''}`}
-            href="#"
-            onClick={(e) => { e.preventDefault(); navigate('/admin/notifications'); }}
-          >
-            <span className="material-symbols-outlined">campaign</span>
-            <span>Send Notifications</span>
+          <a className={getNavClass('notifications')} href="#" onClick={(e) => { e.preventDefault(); navigate('/admin/notifications'); setIsSidebarOpen(false); }}>
+            <span className="material-symbols-outlined shrink-0">campaign</span>
+            <span className={`font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:w-0'}`}>Notifications</span>
           </a>
         </nav>
 
-        <div className="fd-progress-box">
-          <div className="fd-progress-card" style={{ background: '#fef3c7', border: '1px solid #fbbf24' }}>
-            <h4 className="fd-progress-title" style={{ color: '#92400e' }}>⚡ Admin Mode</h4>
-            <p className="fd-progress-stage" style={{ color: '#92400e' }}>Full platform access</p>
+        <div className={`mt-4 overflow-hidden transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:hidden'}`}>
+          <div className="bg-amber-50 border border-amber-400 p-4 rounded-xl flex flex-col items-center text-center">
+            <h4 className="text-amber-900 font-bold text-sm mb-1 uppercase tracking-wider">⚡ Admin Mode</h4>
+            <p className="text-amber-700 text-xs font-medium">Full platform access</p>
           </div>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className={`fd-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Main Content Area */}
+      <main className="flex-1 min-h-screen pb-24 lg:pb-0 overflow-y-auto w-full">
         <TopHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div style={{ padding: '0 1rem 2rem 1rem' }}>
+        <div className="px-4 md:px-8 lg:px-12 pb-12 w-full max-w-[100vw] lg:max-w-none">
           {/* Admin Header */}
-          <header className="fd-header">
-            <div className="fd-header-content">
-              <h1 className="fd-header-title">
-                Admin Dashboard <br />
-
-              </h1>
-              <p className="fd-header-text">{stats.pendingApprovals} ideas pending approval.</p>
-            </div>
-          </header>
+          <div className="mb-8 lg:mb-12 mt-6">
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface mb-2">
+                Admin Dashboard
+              </h3>
+              <p className="text-on-surface-variant text-base lg:text-lg">{stats.pendingApprovals} ideas pending approval.</p>
+          </div>
 
           {/* Stats Cards */}
           {tab === 'overview' && (

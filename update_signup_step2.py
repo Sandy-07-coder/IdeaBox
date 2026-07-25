@@ -1,247 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
-import '../design/signup.css';
+with open('src/components/SignUp.jsx', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
 
-export default function SignUp() {
-  const navigate = useNavigate();
-  
-  // Steps tracking
-  const [step, setStep] = useState(1);
-  const [userId, setUserId] = useState(null);
-  const [otp, setOtp] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
-  // Step 1: Security
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // Step 3: Profile info
-  const [persona, setPersona] = useState('school-student');
-  const [fullName, setFullName] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [institutionName, setInstitutionName] = useState('');
-  const [linkedinUrl, setLinkedinUrl] = useState('');
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [agreeTerms, setAgreeTerms] = useState(false);
-
-  // Persona-specific details
-  const [personaDetails, setPersonaDetails] = useState({});
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-
-  useEffect(() => {
-    // Check if a user with a session already has a completed profile
-    const checkExistingProfile = async (user) => {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, institution_name, terms_agreed')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      // The DB trigger creates a row immediately on sign up with a default persona.
-      // We must check if they actually completed step 3 (e.g. they set terms_agreed or institution_name).
-      if (profile && (profile.terms_agreed || profile.institution_name)) {
-        // Profile already exists AND is setup — skip signup entirely
-        navigate('/dashboard');
-        return true;
-      }
-      return false;
-    };
-
-    // Check if a session already exists
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session) {
-        const alreadyDone = await checkExistingProfile(session.user);
-        if (alreadyDone) return;
-
-        // No profile yet — let them fill out Step 3
-        if (session.user?.email) setEmail(session.user.email);
-        if (session.user?.user_metadata?.full_name) setFullName(session.user.user_metadata.full_name);
-        if (session.user?.user_metadata?.avatar_url) setAvatarUrl(session.user.user_metadata.avatar_url);
-        setStep(3);
-      }
-    });
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          const alreadyDone = await checkExistingProfile(session.user);
-          if (alreadyDone) return;
-
-          // No profile yet — let them fill out Step 3
-          if (session.user?.email) setEmail(session.user.email);
-          if (session.user?.user_metadata?.full_name) setFullName(session.user.user_metadata.full_name);
-          if (session.user?.user_metadata?.avatar_url) setAvatarUrl(session.user.user_metadata.avatar_url);
-          setStep(3);
-        }
-      }
-    );
-
-    return () => {
-      if (authListener && authListener.subscription) {
-        authListener.subscription.unsubscribe();
-      }
-    };
-  }, [navigate]);
-
-  const getInstitutionLabel = () => {
-    switch (persona) {
-      case 'school-student': return 'School Name';
-      case 'college-student': return 'College Name';
-      case 'faculty': return 'College/University Name';
-      case 'industry-professional': return 'Company Name';
-      case 'entrepreneur': return 'Company Name';
-      case 'others': return 'Organization Name';
-      default: return 'Institution/Organization Name';
-    }
-  };
-
-  const handlePersonaChange = (newPersona) => {
-    setPersona(newPersona);
-    setPersonaDetails({});
-  };
-
-  const updatePersonaDetail = (key, value) => {
-    setPersonaDetails(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setUploadedFile(file.name);
-    }
-  };
-
-  const handleStep1Submit = async (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    // Call Supabase to create the user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password
-    });
-
-    if (authError) {
-      setError(authError.message);
-      setLoading(false);
-      return;
-    }
-
-    if (authData?.user) {
-      setUserId(authData.user.id);
-      setStep(2); // Proceed to Verification Step
-    }
-    setLoading(false);
-  };
-
-  const handleGoogleOAuth = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/signup`
-      }
-    });
-
-    if (error) {
-      setError(error.message);
-    }
-  };
-
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    const { data, error: otpError } = await supabase.auth.verifyOtp({
-      email,
-      token: otp,
-      type: 'signup'
-    });
-
-    if (otpError) {
-      setError(otpError.message);
-      setLoading(false);
-      return;
-    }
-
-    if (data?.session) {
-      if (data.user) setUserId(data.user.id);
-      setStep(3);
-    }
-    
-    setLoading(false);
-  };
-
-  const handleStep3Submit = async (e) => {
-    e.preventDefault();
-    if (!agreeTerms) {
-      setError("Please agree to the Terms of Service.");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    const activeUserId = userId || (await supabase.auth.getUser()).data?.user?.id;
-
-    if (!activeUserId) {
-      setError("User session is not active. Please start the sign-up process again.");
-      setLoading(false);
-      return;
-    }
-
-    if (activeUserId) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert([
-          {
-            id: activeUserId,
-            email,
-            full_name: fullName,
-            mobile_number: mobileNumber,
-            persona,
-            institution_name: institutionName,
-            linkedin_url: linkedinUrl,
-            avatar_url: avatarUrl,
-            persona_details: personaDetails,
-            terms_agreed: agreeTerms
-          }
-        ]);
-
-      if (profileError) {
-        console.error('Profile creation error:', profileError);
-        setError(profileError.message);
-        setLoading(false);
-        return;
-      }
-    }
-
-    setLoading(false);
-    navigate('/dashboard');
-  };
-
-  const personaOptions = [
-    { id: 'school-student', label: 'School Student', icon: 'school' },
-    { id: 'college-student', label: 'College Student', icon: 'history_edu' },
-    { id: 'faculty', label: 'Faculty', icon: 'work' },
-    { id: 'industry-professional', label: 'Industry Professional', icon: 'business_center' },
-    { id: 'entrepreneur', label: 'Entrepreneur', icon: 'rocket_launch' },
-    { id: 'others', label: 'Others', icon: 'person' },
-  ];
-
-  return (
+new_ui = r'''  return (
     <div className="bg-background text-on-surface min-h-screen flex flex-col font-body">
       <main className="flex-grow flex items-start justify-center px-6 pt-8 md:pt-16 pb-12 w-full">
         <div className="w-full max-w-5xl">
@@ -329,41 +89,17 @@ export default function SignUp() {
 
                   {error && <p className="text-error font-medium text-sm text-center bg-error-container/10 p-3 rounded-lg border border-error/20">{error}</p>}
 
-                  <div className="pt-8 flex flex-col md:flex-row items-center gap-6 justify-center">
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 w-full">
-                      <button 
-                        className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform active:scale-95 text-center disabled:opacity-70"
-                        type="submit"
-                        disabled={loading}
-                      >
-                        {loading ? 'Processing...' : 'Continue to Verification'}
-                      </button>
-
-                      <div className="flex items-center gap-4 text-outline-variant font-medium text-xs tracking-widest">
-                        <div className="w-8 h-px bg-outline-variant/20"></div>
-                        <span>OR</span>
-                        <div className="w-8 h-px bg-outline-variant/20"></div>
-                      </div>
-
-                      <div className="w-full md:w-auto flex flex-col items-center gap-4">
-                        <button 
-                          className="w-full md:min-w-[280px] flex items-center justify-center gap-3 px-6 py-4 border border-outline-variant/20 rounded-xl hover:bg-surface-container transition-colors text-on-surface font-medium" 
-                          type="button"
-                          onClick={handleGoogleOAuth}
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
-                            <path d="M5.84 14.09c-.22-.66-.35-1.43-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
-                          </svg>
-                          <span className="whitespace-nowrap">Continue with Google</span>
-                        </button>
-                        <p className="text-sm text-on-surface-variant">
-                          Already have an account? <button type="button" onClick={() => navigate('/login')} className="text-primary font-bold hover:underline">Sign in</button>
-                        </p>
-                      </div>
-                    </div>
+                  <div className="pt-6 flex flex-col md:flex-row md:items-center gap-6">
+                    <button 
+                      className="flex-grow md:flex-none md:w-64 h-16 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl font-bold text-lg shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-70"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? 'Processing...' : 'Continue'}
+                    </button>
+                    <p className="text-on-surface-variant text-sm">
+                      Already have an account? <button type="button" onClick={() => navigate('/login')} className="text-primary font-bold hover:underline">Sign In</button>
+                    </p>
                   </div>
                 </form>
 
@@ -722,3 +458,9 @@ export default function SignUp() {
     </div>
   );
 }
+'''
+
+lines[243:752] = [new_ui + '\n']
+
+with open('src/components/SignUp.jsx', 'w', encoding='utf-8') as f:
+    f.writelines(lines)

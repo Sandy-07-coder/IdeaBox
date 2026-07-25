@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Idea-Box | Founder Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#4F46E5",
+                "on-primary": "#ffffff",
+                "primary-container": "#EEF2FF",
+                "on-primary-container": "#4338CA",
+                "surface": "#f5f7f9",
+                "on-surface": "#2c2f31",
+                "on-surface-variant": "#595c5e",
+                "outline-variant": "#abadaf",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#eef1f3",
+                "surface-container-high": "#dfe3e6",
+                "secondary-container": "#d8caff",
+                "on-secondary-container": "#4e339c",
+                "tertiary-container": "#fd8bca",
+                "on-tertiary-container": "#610244",
+              },
+              fontFamily: {
+                "headline": ["Inter"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+          min-height: 100dvh;
+        }
+        
+        /* Desktop Collapsed Sidebar styles */
+        @media (min-width: 1024px) {
+            #sidebar.collapsed {
+                width: 80px;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            #sidebar.collapsed .sidebar-text {
+                display: none;
+            }
+            #sidebar.collapsed .sidebar-logo-text {
+                display: none;
+            }
+            #sidebar.collapsed .sidebar-item {
+                justify-content: center;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            #sidebar.collapsed .sidebar-header {
+                justify-content: center;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Mobile specific */
+        @media (max-width: 1023.9px) {
+            .sidebar-mobile-hidden {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col lg:flex-row">
+<!-- Sidebar / Navigation Drawer -->
+<aside class="fixed inset-y-0 left-0 w-64 z-50 bg-white border-r border-outline-variant/10 flex flex-col p-6 space-y-2 transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:static lg:h-screen" id="sidebar">
+<div class="mb-8 flex items-center justify-between lg:justify-start gap-2 sidebar-header">
+<div class="flex items-center gap-2 overflow-hidden">
+<span class="material-symbols-outlined text-primary text-3xl shrink-0" data-icon="rocket_launch">rocket_launch</span>
+<h1 class="text-2xl font-black tracking-tighter text-primary sidebar-logo-text whitespace-nowrap">Idea-Box</h1>
+</div>
+<button class="lg:hidden p-2 text-on-surface-variant" onclick="toggleMobileSidebar()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center space-x-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-bold transition-all sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="storefront">storefront</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">Marketplace</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="lightbulb">lightbulb</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">My Ideas</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="psychology">psychology</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">Mentors</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="event">event</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">Events</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">Messages</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="person">person</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">My Profile</span>
+</a>
+<a class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-colors sidebar-item" href="#">
+<span class="material-symbols-outlined shrink-0" data-icon="settings">settings</span>
+<span class="font-inter text-sm font-medium uppercase tracking-widest sidebar-text whitespace-nowrap">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Bottom Navigation for Mobile/Tablet -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-outline-variant/20 z-50 px-4 py-2 flex justify-around items-center">
+<a class="flex flex-col items-center p-2 text-primary" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Market</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">lightbulb</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Ideas</span>
+</a>
+<button class="flex flex-col items-center p-2 text-on-surface-variant" onclick="toggleMobileSidebar()">
+<span class="material-symbols-outlined">menu</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Menu</span>
+</button>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 min-h-screen pb-24 lg:pb-0 overflow-y-auto">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 bg-white/70 backdrop-blur-xl flex justify-between items-center px-6 lg:px-8 h-16 lg:h-20 border-b border-outline-variant/10">
+<div class="flex items-center space-x-4">
+<button class="text-primary hover:bg-primary/5 p-2 rounded-lg transition-colors" onclick="toggleDesktopSidebar()">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden sm:flex items-center space-x-3">
+<span class="material-symbols-outlined text-primary" data-icon="speed">speed</span>
+<h2 class="font-inter tracking-tight text-on-surface font-bold text-lg lg:text-xl">Welcome back, Founder</h2>
+</div>
+<!-- Mobile Brand -->
+<div class="sm:hidden flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="rocket_launch">rocket_launch</span>
+<h1 class="text-xl font-black tracking-tighter text-primary">Idea-Box</h1>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 lg:px-6 rounded-xl transition-all text-xs lg:text-sm shadow-lg shadow-primary/20">
+            POST YOUR IDEA
+        </button>
+</header>
+<!-- Content Canvas -->
+<div class="py-8 lg:py-12 px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
+<!-- Hero Header Section -->
+<section class="mb-8 lg:mb-12">
+<h3 class="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-on-surface mb-2">Welcome Back, Alex Chen!</h3>
+<p class="text-on-surface-variant text-base lg:text-lg">Let’s build your legacy. Explore the latest opportunities in the marketplace.</p>
+</section>
+<!-- Project Marketplace Grid -->
+<section class="mb-8">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+<h4 class="text-xl lg:text-2xl font-bold tracking-tight">Project Marketplace</h4>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high rounded-xl text-xs font-bold uppercase tracking-wider transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="">Filters</span>
+</button>
+</div>
+<!-- Bento Grid Layout: 1 col mobile, 2 col tablet, 3 col desktop -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Project Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border-t-2 border-primary transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Looking for Co-Founders</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 1</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">kshjf aljehf jsdhfb lqpwue rtyuiop mnzvxc bqowie rtyu fghjkl asdfgh</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">AI/ML</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">React</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Python</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+<!-- Project Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Early Stage</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 2</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">lqpwue rtyuiop mnzvxc bqowie rtyu fghjkl asdfgh kshjf aljehf jsdhfb</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Solidity</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Next.js</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+<!-- Project Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Growth Phase</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 3</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">jsdhfb lqpwue rtyuiop kshjf aljehf mnzvxc bqowie rtyu fghjkl asdfgh</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">BioTech</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Swift</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+<!-- Project Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Seed</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 4</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">mnzvxc bqowie rtyu fghjkl asdfgh kshjf aljehf jsdhfb lqpwue rtyuiop</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Cloud</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Go</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+<!-- Project Card 5 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Co-Founder Search</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 5</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">fghjkl asdfgh kshjf aljehf jsdhfb lqpwue rtyuiop mnzvxc bqowie rtyu</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">EdTech</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">TypeScript</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+<!-- Project Card 6 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.01] cursor-pointer group flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">MVP Phase</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors" data-icon="bookmark">bookmark</span>
+</div>
+<h5 class="text-lg font-bold text-on-surface mb-2">Project 6</h5>
+<p class="text-on-surface-variant text-sm mb-6 leading-relaxed">bqowie rtyu fghjkl asdfgh kshjf aljehf jsdhfb lqpwue rtyuiop mnzvxc</p>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">IoT</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded text-[10px] font-bold uppercase">Rust</span>
+</div>
+<button class="mt-6 w-full bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 rounded-lg transition-colors text-sm uppercase tracking-wider">View Details</button></div>
+</div>
+</section>
+</div>
+</main>
+<script>
+    function toggleMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+        }
+    }
+
+    function toggleDesktopSidebar() {
+        // Only toggle width/collapse on desktop
+        if (window.innerWidth >= 1024) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        } else {
+            // Use existing mobile toggle logic
+            toggleMobileSidebar();
+        }
+    }
+</script>
+</body></html>

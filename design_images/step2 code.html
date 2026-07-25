@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#9a9d9f",
+                        "on-primary-fixed": "#000000",
+                        "surface-tint": "#4a40e0",
+                        "error": "#b41340",
+                        "background": "#f5f7f9",
+                        "primary-fixed-dim": "#8885ff",
+                        "on-surface": "#2c2f31",
+                        "outline": "#747779",
+                        "on-surface-variant": "#595c5e",
+                        "surface-container": "#e5e9eb",
+                        "on-tertiary": "#ffeff4",
+                        "tertiary-fixed": "#fd8bca",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6d104e",
+                        "secondary-fixed": "#d8caff",
+                        "secondary-dim": "#563ca5",
+                        "on-tertiary-fixed": "#360024",
+                        "primary-container": "#9795ff",
+                        "secondary": "#6249b2",
+                        "inverse-primary": "#8582ff",
+                        "tertiary": "#983772",
+                        "surface-container-highest": "#d9dde0",
+                        "surface-variant": "#d9dde0",
+                        "on-error": "#ffefef",
+                        "primary": "#4a40e0",
+                        "surface-dim": "#d0d5d8",
+                        "on-background": "#2c2f31",
+                        "tertiary-dim": "#892a65",
+                        "on-secondary": "#f7f0ff",
+                        "surface-container-high": "#dfe3e6",
+                        "surface-container-low": "#eef1f3",
+                        "error-container": "#f74b6d",
+                        "on-secondary-container": "#4e339c",
+                        "tertiary-container": "#fd8bca",
+                        "tertiary-fixed-dim": "#ee7ebc",
+                        "primary-dim": "#3d30d4",
+                        "error-dim": "#a70138",
+                        "on-secondary-fixed-variant": "#573da6",
+                        "secondary-fixed-dim": "#cbbaff",
+                        "on-error-container": "#510017",
+                        "on-primary": "#f4f1ff",
+                        "outline-variant": "#abadaf",
+                        "secondary-container": "#d8caff",
+                        "on-primary-fixed-variant": "#1a0099",
+                        "primary-fixed": "#9795ff",
+                        "on-tertiary-container": "#610244",
+                        "on-secondary-fixed": "#3a1b88",
+                        "inverse-surface": "#0b0f10",
+                        "surface-bright": "#f5f7f9",
+                        "surface": "#f5f7f9",
+                        "on-primary-container": "#14007e"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f5f7f9;
+            font-family: 'Inter', sans-serif;
+            color: #2c2f31;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Top Navigation Suppression: Linear Transactional Page -->
+<main class="flex-grow flex items-center justify-center px-6 pt-8 md:pt-16">
+<div class="w-full max-w-5xl">
+<!-- Branding Header -->
+<div class="flex flex-col items-center">
+<h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-on-surface mb-3">IDEA - BOX</h1>
+<p class="text-on-surface-variant text-center max-w-md">Start your journey in the Idea Lab</p><div>.</div><p></p>
+</div>
+<!-- Main Form Card -->
+<div class="bg-surface-container-lowest rounded-[2rem] p-8 md:p-16 shadow-[0_20px_50px_rgba(74,64,224,0.05)]">
+<form class="space-y-12">
+<!-- Persona Selection -->
+<section>
+<h2 class="text-sm font-bold uppercase tracking-widest text-primary mb-6">I am a...</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
+<label class="group cursor-pointer">
+<input checked="" class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">school</span>
+<span class="font-bold text-on-surface">School Student</span>
+</div>
+</label>
+<label class="group cursor-pointer">
+<input class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">history_edu</span>
+<span class="font-bold text-on-surface">College Student</span>
+</div>
+</label>
+<label class="group cursor-pointer">
+<input class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">work</span>
+<span class="font-bold text-on-surface">Faculty</span>
+</div>
+</label>
+<label class="group cursor-pointer">
+<input class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">business_center</span>
+<span class="font-bold text-on-surface">Industry Professional</span>
+</div>
+</label>
+<label class="group cursor-pointer">
+<input class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">rocket_launch</span>
+<span class="font-bold text-on-surface">Entrepreneur</span>
+</div>
+</label>
+<label class="group cursor-pointer">
+<input class="sr-only peer" name="persona" type="radio"/>
+<div class="p-6 rounded-xl border-2 border-transparent bg-surface-container-low peer-checked:bg-primary-container/20 peer-checked:border-primary transition-all duration-300 flex flex-col items-center text-center h-full">
+<span class="material-symbols-outlined text-3xl mb-3 text-primary">person</span>
+<span class="font-bold text-on-surface">Others</span>
+</div>
+</label>
+</div>
+</section>
+<!-- Identity Details -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+<div class="col-span-1 md:col-span-2">
+<h2 class="text-sm font-bold uppercase tracking-widest text-primary mb-2">Personal Information</h2>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Full Name</label>
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Mobile Number</label>
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Email Address</label>
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="john@university.edu" type="email"/>
+</div><div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">GitHub URL (Optional)</label>
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="https://github.com/username" type="url"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">LinkedIn URL (Optional)</label>
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="https://linkedin.com/in/username" type="url"/>
+</div>
+</section>
+<!-- ID Upload Section -->
+<section>
+<h2 class="text-sm font-bold uppercase tracking-widest text-primary mb-6">Profile Photo (Optional)</h2>
+<div class="relative group">
+<input accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" type="file"/>
+<div class="border-2 border-dashed border-outline-variant/30 rounded-2xl p-8 flex flex-col items-center justify-center bg-surface-container-low group-hover:bg-surface-container transition-colors">
+<div class="w-12 h-12 rounded-full bg-primary-container/30 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary text-2xl">add_a_photo</span>
+</div>
+<h3 class="text-base font-bold text-on-surface">Upload Profile Photo</h3>
+<p class="text-on-surface-variant text-xs mt-1">Drag and drop or click to browse</p>
+</div>
+</div>
+</section><section>
+<h2 class="text-sm font-bold uppercase tracking-widest text-primary mb-6">Verification</h2>
+<div class="relative group">
+<input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" type="file"/>
+<div class="border-2 border-dashed border-outline-variant/30 rounded-2xl p-12 flex flex-col items-center justify-center bg-surface-container-low group-hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 rounded-full bg-primary-container/30 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">upload_file</span>
+</div>
+<h3 class="text-lg font-bold text-on-surface">Upload Official Identification</h3>
+<p class="text-on-surface-variant text-sm mt-1">Drag and drop or click to browse (PDF, PNG, JPG)</p>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+<div class="col-span-1 md:col-span-2">
+<h2 class="text-sm font-bold uppercase tracking-widest text-primary mb-2">Security</h2>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Password</label>
+<div class="relative">
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-medium text-on-surface-variant ml-1">Confirm Password</label>
+<div class="relative">
+<input class="w-full h-14 px-6 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Terms & Submit -->
+<div class="pt-6 border-t border-outline-variant/10">
+<label class="flex items-start gap-3 cursor-pointer mb-8">
+<div class="mt-1">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-5 w-5" type="checkbox"/>
+</div>
+<span class="text-sm text-on-surface-variant">
+                            I agree to the <a class="text-primary font-bold hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-bold hover:underline" href="#">Privacy Policy</a> of Idea Lab.
+                        </span>
+</label>
+<div class="flex flex-col md:flex-row md:items-center gap-6">
+<button class="flex-grow md:flex-none md:w-64 h-16 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl font-bold text-lg shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200" type="submit">
+                            Create Account
+                        </button>
+<p class="text-on-surface-variant text-sm">
+                            Already have an account? <a class="text-primary font-bold hover:underline" href="#">Sign In</a>
+</p>
+</div>
+</div>
+</form>
+</div>
+</div>
+</main>
+<!-- Footer Space -->
+<footer class="py-8 px-6 text-center text-outline-variant text-xs">© 2026 Idea-Box. Powered by Idea Lab.</footer>
+<!-- Bottom Nav Suppression: Task-Focused Page -->
+</body></html>

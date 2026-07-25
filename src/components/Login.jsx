@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import '../design/login.css';
 import collegeLogo from '../assets/college-logo.png';
 
 export default function Login() {
@@ -76,48 +75,57 @@ export default function Login() {
   };
 
   return (
-    <main className="login-container">
+    <main className="flex min-h-screen w-full">
       {/* Left Side: Brand Narrative (Indigo) */}
-      <section className="login-brand-section">
-        <div className="login-brand-content">
-          <h1 className="login-brand-title">
+      <section className="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden flex-col justify-center p-20">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 right-0 -mr-24 -mt-24 w-96 h-96 bg-primary-container opacity-20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-24 -mb-24 w-80 h-80 bg-secondary-container opacity-10 rounded-full blur-3xl"></div>
+
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-white text-6xl font-extrabold tracking-tight leading-[1.1] mb-10">
             Don't just dream it. Launch it.
           </h1>
-          <p className="login-brand-subtitle">
+          <p className="text-on-primary text-xl font-medium leading-relaxed opacity-90">
             We bridge the gap between academic brilliance and market success by connecting founders with mentors and capital.
           </p>
         </div>
       </section>
 
       {/* Right Side: Login Form */}
-      <section className="login-form-section">
-        <div className="login-form-wrapper">
-          <div className="login-form-inner">
-            {/* Header */}
-            <div className="login-header">
-              <img
-                alt="SEC Logo"
-                className="login-logo"
-                src={collegeLogo} 
-              />
-              <h2 className="login-heading">
+      <section className="w-full lg:w-1/2 flex items-center justify-center p-8 lg:p-20 bg-surface">
+        <div className="w-full max-w-md flex flex-col min-h-[80vh]">
+          <div className="flex-grow flex flex-col justify-center">
+            <div className="mb-10 text-left">
+              <div className="mb-8">
+                <img
+                  alt="SEC Logo"
+                  className="h-14 w-auto object-contain"
+                  src={collegeLogo}
+                />
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight text-on-surface mb-2">
                 Welcome back
               </h2>
-              <p className="login-subtitle">
+              <p className="text-on-surface-variant font-medium">
                 Continue your journey with Idea-Box.
               </p>
             </div>
 
-            <div className="login-content">
+            <div className="space-y-6">
+              {error && (
+                <div className="text-error font-medium text-sm text-center bg-error-container/10 p-3 rounded-lg border border-error/20">
+                  {error}
+                </div>
+              )}
+
               {/* Social Login */}
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
-                style={{ width: '100%', padding: '0.75rem', background: '#fff', border: '1px solid #dadce0', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: '500', color: '#3c4043', fontSize: '14px', fontFamily: '"Google Sans", Roboto, Arial, sans-serif', boxShadow: '0 1px 2px 0 rgba(60,64,67,0.3)', transition: 'background-color 0.2s', marginBottom: '1.5rem' }}
-                onMouseOver={e => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                onMouseOut={e => e.currentTarget.style.backgroundColor = '#fff'}
+                className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-surface-container-lowest text-on-surface font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-outline-variant/10 active:scale-[0.98]"
               >
-                <svg viewBox="0 0 24 24" style={{width: '20px', height: '20px'}}>
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                     fill="#4285F4"
@@ -135,35 +143,24 @@ export default function Login() {
                     fill="#EA4335"
                   ></path>
                 </svg>
-                Continue with Google
+                Sign in with Google
               </button>
 
-              {/* Divider */}
-              <div className="login-divider">
-                <div className="login-divider-line"></div>
-                <span className="login-divider-text">
+              <div className="relative flex items-center justify-center">
+                <div className="w-full border-t border-outline-variant/30"></div>
+                <span className="absolute bg-surface px-4 text-sm font-medium text-on-surface-variant">
                   Or use email
                 </span>
               </div>
 
-              {error && (
-                <div style={{ color: 'red', marginTop: '10px', marginBottom: '10px', textAlign: 'center', fontSize: '0.9rem' }}>
-                  {error}
-                </div>
-              )}
-
-              {/* Login Form */}
-              <form onSubmit={handleSubmit} className="login-form">
-                {/* Email Field */}
-                <div className="login-form-group">
-                  <label
-                    className="login-label"
-                    htmlFor="email"
-                  >
+              {/* Input Fields */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold text-on-surface-variant ml-1" htmlFor="email">
                     Email Address
                   </label>
                   <input
-                    className="login-input"
+                    className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/40 text-on-surface placeholder:text-outline transition-all"
                     id="email"
                     placeholder="leo@stanford.edu"
                     type="email"
@@ -173,25 +170,18 @@ export default function Login() {
                   />
                 </div>
 
-                {/* Password Field */}
-                <div className="login-form-group">
-                  <div className="login-label-row">
-                    <label
-                      className="login-label"
-                      htmlFor="password"
-                    >
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center ml-1">
+                    <label className="text-sm font-semibold text-on-surface-variant" htmlFor="password">
                       Password
                     </label>
-                    <a
-                      className="login-forgot-link"
-                      href="#"
-                    >
+                    <a className="text-sm font-bold text-primary hover:text-primary-dim transition-colors" href="#">
                       Forgot Password?
                     </a>
                   </div>
-                  <div className="login-password-wrapper">
+                  <div className="relative">
                     <input
-                      className="login-input"
+                      className="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary/40 text-on-surface placeholder:text-outline transition-all"
                       id="password"
                       placeholder="••••••••"
                       type={showPassword ? 'text' : 'password'}
@@ -200,37 +190,32 @@ export default function Login() {
                       required
                     />
                     <button
-                      className="login-password-toggle"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
                       type="button"
                       onClick={togglePasswordVisibility}
                     >
-                      <span className="material-symbols-outlined">
+                      <span className="material-symbols-outlined text-[20px]">
                         {showPassword ? 'visibility_off' : 'visibility'}
                       </span>
                     </button>
                   </div>
                 </div>
 
-                {/* Remember Me Checkbox */}
-                <div className="login-checkbox-group">
+                <div className="flex items-center gap-2 py-2">
                   <input
-                    className="login-checkbox"
+                    className="w-5 h-5 rounded border-none bg-surface-container-high text-primary focus:ring-primary focus:ring-offset-0 transition-all cursor-pointer"
                     id="remember"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                   />
-                  <label
-                    className="login-checkbox-label"
-                    htmlFor="remember"
-                  >
+                  <label className="text-sm font-medium text-on-surface-variant select-none cursor-pointer" htmlFor="remember">
                     Remember me
                   </label>
                 </div>
 
-                {/* Sign In Button */}
                 <button
-                  className="login-submit-btn"
+                  className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 active:scale-95"
                   type="submit"
                   disabled={loading}
                 >
@@ -238,12 +223,10 @@ export default function Login() {
                 </button>
               </form>
 
-              {/* Sign Up Link */}
-              <p className="login-signup-text">
+              <p className="text-center pt-8 text-on-surface-variant font-medium">
                 New to Idea-Box?{' '}
                 <a
-                  className="login-signup-link"
-                  href="#"
+                  className="text-primary font-bold hover:underline decoration-2 underline-offset-4 cursor-pointer"
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/signup');
@@ -255,9 +238,8 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Footer */}
-          <footer className="login-footer">
-            <p className="login-footer-text">
+          <footer className="mt-auto pt-10 text-center">
+            <p className="text-xs text-on-surface-variant font-medium opacity-60">
               © 2026 Idea-Box. Lets Build Your Legacy Together
             </p>
           </footer>
