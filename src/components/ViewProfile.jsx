@@ -34,10 +34,9 @@ export default function ViewProfile() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser && !loadingAuth) {
-      fetchUser();
-    }
-  }, [currentUser, loadingAuth, fetchUser]);
+    // Rely on global App.jsx auth listener. If we force fetchUser here, it loops infinitely if the user is a guest.
+    // We only fetch it ONCE if it hasn't been fetched at all (though App.jsx usually handles this).
+  }, []);
 
   useEffect(() => {
     const fetchProfileToView = async () => {

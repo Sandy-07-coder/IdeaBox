@@ -125,7 +125,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="fd-container" style={{ overflowX: 'hidden' }}>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-surface font-body text-on-surface">
       {/* Sidebar */}
       <LeftSidebar
         activeTab={activeTab}
@@ -135,25 +135,12 @@ export default function Dashboard() {
         setIsSidebarOpen={setIsSidebarOpen}
       />
 
-      {/* Main Content */}
-      <main className={`fd-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Main Content Area */}
+      <main className="flex-1 min-h-screen pb-24 lg:pb-0 overflow-y-auto w-full">
         <TopHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div style={{ padding: '0 1rem 2rem 1rem' }}>
-          {/* Header Section */}
-          <header className="fd-header">
-            <div className="fd-header-content">
-              <h1 className="fd-header-title">
-                Welcome Back, {currentUserProfile?.full_name ? currentUserProfile.full_name.split(' ')[0] : 'Innovator'}! <br />
+        <div className="px-4 md:px-8 lg:px-12 pb-12 w-full max-w-[100vw] lg:max-w-none">
 
-              </h1>
-              <p className="fd-header-text">You have {projects.filter(p => p.author_id === currentUser?.id).reduce((acc, p) => acc + (p.team_requests?.filter(req => req.status === 'pending').length || 0), 0)} pending team requests.</p>
-            </div>
-            <button className="fd-post-btn" onClick={() => navigate('/post-idea')}>
-              <span className="material-symbols-outlined">add_circle</span>
-              POST YOUR IDEA
-            </button>
-          </header>
 
           {/* Tab Content */}
           {renderContent()}

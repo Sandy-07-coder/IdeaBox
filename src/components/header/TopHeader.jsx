@@ -6,8 +6,11 @@ import { useUserStore } from '../../store';
 import { useChatStore } from '../../store/chatStore';
 import { useNotificationStore } from '../../store/notificationStore';
 import { supabase } from '../../supabaseClient';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function TopHeader({ toggleSidebar }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, currentUserProfile } = useUserStore();
   const { unreadCount, fetchUnreadCount, subscribeToGlobalMessages, updatePresence } = useChatStore();
   const { 
@@ -59,20 +62,32 @@ export default function TopHeader({ toggleSidebar }) {
   };
 
   return (
-    <header ref={headerRef} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 40, boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+    <header ref={headerRef} className="sticky top-0 z-40 bg-white/70 backdrop-blur-xl flex justify-between items-center px-6 lg:px-8 h-16 lg:h-20 border-b border-outline-variant/10">
       
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="flex items-center space-x-4">
         <button 
           onClick={toggleSidebar} 
-          style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#4b5563', display: 'flex', alignItems: 'center', padding: '0.5rem', borderRadius: '8px', marginLeft: '-0.5rem' }} 
-          onMouseOver={e => e.currentTarget.style.background = '#f3f4f6'} 
-          onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+          className="text-primary hover:bg-primary/5 p-2 rounded-lg transition-colors flex items-center -ml-2"
         >
           <span className="material-symbols-outlined" style={{ fontSize: '1.5rem' }}>menu</span>
         </button>
+        {location.pathname.includes('/marketplace') && (
+          <div className="hidden sm:flex items-center space-x-3">
+            <span className="material-symbols-outlined text-primary text-xl">speed</span>
+            <h2 className="font-body tracking-tight text-on-surface font-bold text-lg lg:text-xl">
+              Welcome back, {currentUserProfile?.full_name ? currentUserProfile.full_name.split(' ')[0] : 'Founder'}
+            </h2>
+          </div>
+        )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+      <div className="flex items-center gap-4 lg:gap-6">
+        <button 
+          onClick={() => navigate('/post-idea')}
+          className="hidden md:block bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-4 lg:px-6 rounded-xl transition-all text-xs lg:text-sm shadow-lg shadow-primary/20 whitespace-nowrap uppercase tracking-wider"
+        >
+          POST YOUR IDEA
+        </button>
         <div style={{ position: 'relative' }}>
           <button 
             onClick={() => toggleDropdown('notifications')}

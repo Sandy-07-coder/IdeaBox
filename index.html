@@ -7,12 +7,77 @@
     <title>Idea-Box</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#f74b6d",
+              "primary": "#4a40e0",
+              "on-secondary-fixed": "#3a1b88",
+              "inverse-primary": "#8582ff",
+              "surface-variant": "#d9dde0",
+              "surface-container-low": "#eef1f3",
+              "secondary-fixed-dim": "#cbbaff",
+              "primary-fixed-dim": "#8885ff",
+              "secondary-dim": "#563ca5",
+              "on-primary-fixed-variant": "#1a0099",
+              "outline": "#747779",
+              "surface-dim": "#d0d5d8",
+              "on-surface": "#2c2f31",
+              "on-background": "#2c2f31",
+              "surface-bright": "#f5f7f9",
+              "on-tertiary-fixed": "#360024",
+              "error-dim": "#a70138",
+              "outline-variant": "#abadaf",
+              "on-tertiary-container": "#610244",
+              "on-tertiary": "#ffeff4",
+              "secondary": "#6249b2",
+              "surface-container-lowest": "#ffffff",
+              "primary-dim": "#3d30d4",
+              "error": "#b41340",
+              "tertiary-dim": "#892a65",
+              "on-primary": "#f4f1ff",
+              "on-primary-container": "#14007e",
+              "tertiary-container": "#fd8bca",
+              "inverse-surface": "#0b0f10",
+              "background": "#f5f7f9",
+              "on-error": "#ffefef",
+              "surface-container-high": "#dfe3e6",
+              "primary-fixed": "#9795ff",
+              "on-tertiary-fixed-variant": "#6d104e",
+              "tertiary": "#983772",
+              "tertiary-fixed": "#fd8bca",
+              "on-secondary-fixed-variant": "#573da6",
+              "on-primary-fixed": "#000000",
+              "on-error-container": "#510017",
+              "secondary-fixed": "#d8caff",
+              "on-surface-variant": "#595c5e",
+              "tertiary-fixed-dim": "#ee7ebc",
+              "surface-tint": "#4a40e0",
+              "on-secondary-container": "#4e339c",
+              "surface-container-highest": "#d9dde0",
+              "inverse-on-surface": "#9a9d9f",
+              "surface": "#f5f7f9",
+              "on-secondary": "#f7f0ff",
+              "secondary-container": "#d8caff",
+              "primary-container": "#9795ff",
+              "surface-container": "#e5e9eb"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+  <body class="bg-surface text-on-surface antialiased min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
