@@ -1,0 +1,286 @@
+/* ============================================================
+   Team Member Card — IdeaBox
+   ============================================================ */
+
+.tm-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--fd-surface-container-lowest);
+  border-radius: 0.75rem;
+  border: 1px solid var(--fd-ghost-border);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.tm-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.tm-card--inactive {
+  opacity: 0.55;
+  filter: grayscale(0.5);
+}
+
+/* Avatar */
+.tm-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--fd-primary) 0%, #7c3aed 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.tm-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Small dot to indicate "hired via Hiring" source */
+.tm-source-dot {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 1.5px solid #fff;
+}
+
+/* Info */
+.tm-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.tm-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--fd-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tm-role {
+  font-size: 0.75rem;
+  color: var(--fd-on-surface-variant);
+}
+
+.tm-role-input {
+  font-size: 0.75rem;
+  color: var(--fd-on-surface-variant);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--fd-outline-variant);
+  outline: none;
+  font-family: inherit;
+  padding: 0;
+  width: 100%;
+  cursor: text;
+  transition: border-color 0.2s;
+}
+
+.tm-role-input:focus {
+  border-color: var(--fd-primary);
+  color: var(--fd-on-surface);
+}
+
+.tm-inactive-label {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: var(--fd-surface-container);
+  color: var(--fd-outline);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+}
+
+/* Actions */
+.tm-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.tm-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--fd-surface-container-low);
+  color: var(--fd-on-surface-variant);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tm-action-btn .material-symbols-outlined {
+  font-size: 1.1rem;
+}
+
+.tm-action-btn:hover {
+  background: var(--fd-primary-container);
+  color: var(--fd-on-primary-container);
+}
+
+.tm-action-btn--danger:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ── Edit Request Banner ───────────────────────────────────── */
+.er-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.er-banner.pending {
+  background: #fffbeb;
+  border: 1.5px solid #fbbf24;
+  color: #78350f;
+}
+
+.er-banner.approved {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #14532d;
+}
+
+.er-banner.rejected {
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  color: #7f1d1d;
+}
+
+.er-banner .material-symbols-outlined {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+.er-banner-content {
+  flex: 1;
+}
+
+.er-banner-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin: 0 0 0.2rem 0;
+}
+
+.er-banner-desc {
+  font-size: 0.8rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Add Member inline form ───────────────────────────────── */
+.tm-add-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.tm-add-row input,
+.tm-add-row select {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  background: var(--fd-surface-container-low);
+  border: 1.5px solid var(--fd-outline-variant);
+  border-radius: 0.65rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--fd-on-surface);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.tm-add-row input:focus,
+.tm-add-row select:focus {
+  border-color: var(--fd-primary);
+}
+
+.tm-add-btn {
+  padding: 0.55rem 1rem;
+  background: var(--fd-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.65rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.tm-add-btn:hover {
+  background: var(--fd-primary-dim);
+}
+
+/* ── Edit-request drawer / modal ──────────────────────────── */
+.er-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--fd-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.4rem 0;
+}
+
+.er-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.er-input,
+.er-textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: var(--fd-surface-container-low);
+  border: 1.5px solid var(--fd-outline-variant);
+  border-radius: 0.7rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--fd-on-surface);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.er-textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
+}
+
+.er-input:focus,
+.er-textarea:focus {
+  border-color: var(--fd-primary);
+}

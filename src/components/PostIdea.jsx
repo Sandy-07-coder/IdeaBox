@@ -19,21 +19,6 @@ export default function PostIdea() {
   // Step 2 fields
   const [requirements, setRequirements] = useState('');
   const [prototypeUrl, setPrototypeUrl] = useState('');
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [newMemberName, setNewMemberName] = useState('');
-  const [newMemberRole, setNewMemberRole] = useState('');
-
-  const handleAddMember = () => {
-    if (newMemberName.trim() && newMemberRole.trim()) {
-      setTeamMembers([...teamMembers, { name: newMemberName.trim(), role: newMemberRole.trim() }]);
-      setNewMemberName('');
-      setNewMemberRole('');
-    }
-  };
-
-  const handleRemoveMember = (idx) => {
-    setTeamMembers(teamMembers.filter((_, i) => i !== idx));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,7 +44,7 @@ export default function PostIdea() {
         target_audience: targetAudience,
         requirements: requirements || null,
         prototype_url: prototypeUrl || null,
-        team_members: teamMembers.length > 0 ? teamMembers : [],
+        team_members: [],
         project_status: 'Just an Idea',
         teammates_needed: 1,
         skills_needed: [],
@@ -234,64 +219,6 @@ export default function PostIdea() {
                   />
                 </div>
 
-                {/* Team Members */}
-                <div className="pi-input-group">
-                  <label className="pi-label">
-                    <span>Existing Team Members</span>
-                    <span className="pi-char-count">Optional</span>
-                  </label>
-
-                  {/* Added Members */}
-                  {teamMembers.length > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                      {teamMembers.map((member, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.75rem', background: '#f1f5f9', borderRadius: '8px' }}>
-                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #2563eb, #7c3aed)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.8rem', flexShrink: 0 }}>
-                            {member.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div style={{ flex: 1 }}>
-                            <span style={{ fontWeight: '600', fontSize: '0.9rem', color: '#0f172a' }}>{member.name}</span>
-                            <span style={{ color: '#64748b', fontSize: '0.8rem', marginLeft: '0.5rem' }}>— {member.role}</span>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveMember(idx)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex', padding: '0.25rem' }}
-                          >
-                            <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>close</span>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Add Member Inputs */}
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
-                    <input
-                      className="pi-input"
-                      placeholder="Name"
-                      type="text"
-                      value={newMemberName}
-                      onChange={(e) => setNewMemberName(e.target.value)}
-                      style={{ flex: 1 }}
-                    />
-                    <input
-                      className="pi-input"
-                      placeholder="Role (e.g., Frontend Dev)"
-                      type="text"
-                      value={newMemberRole}
-                      onChange={(e) => setNewMemberRole(e.target.value)}
-                      style={{ flex: 1 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddMember}
-                      style={{ padding: '0.7rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
-                    >
-                      <span className="material-symbols-outlined" style={{ fontSize: '1.25rem' }}>person_add</span>
-                    </button>
-                  </div>
-                </div>
               </>
             )}
 

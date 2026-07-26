@@ -1,7 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import '../../design/messages.css';
+import '../../design/team.css';
+import TeamMemberCard from './TeamMemberCard';
+
+/* Read-only team section shown in the public/admin drawer view */
+function IdeaTeamSection({ ideaId, currentUser }) {
+  const [members, setMembers] = useState([]);
+  useEffect(() => {
+    if (!ideaId) return;
+    supabase
+      .from('idea_members')
+      .select('*, profiles!idea_members_member_id_fkey(id, full_name, avatar_url, persona)')
+      .eq('idea_id', ideaId)
+      .is('left_at', null)
+      .order('joined_at')
+      .then(({ data }) => setMembers(data || []));
+  }, [ideaId]);
+
+  if (members.length === 0) return null;
+  return (
+    <div style={{ marginBottom: '1.25rem' }}>
+      <h4 style={{ margin: '0 0 0.6rem 0', fontSize: '0.85rem', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Team Members</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        {members.map(m => (
+          <TeamMemberCard key={m.id} member={m} currentUser={currentUser} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function ProjectDrawer({
   selectedProject,
@@ -68,13 +97,13 @@ export default function ProjectDrawer({
               <span style={{ fontWeight: '600', color: '#111827', fontSize: '1rem' }}>Project Details</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <button 
+              <button
                 onClick={() => {
                   const url = `${window.location.origin}/dashboard/marketplace/${selectedProject.id}`;
                   navigator.clipboard.writeText(url);
                   alert('Shareable link copied to clipboard!');
-                }} 
-                style={{ background: '#e0e7ff', border: 'none', cursor: 'pointer', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 0.75rem', borderRadius: '8px', transition: 'background 0.2s', gap: '0.25rem', fontSize: '0.8rem', fontWeight: '600' }} 
+                }}
+                style={{ background: '#e0e7ff', border: 'none', cursor: 'pointer', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 0.75rem', borderRadius: '8px', transition: 'background 0.2s', gap: '0.25rem', fontSize: '0.8rem', fontWeight: '600' }}
                 title="Copy shareable link"
               >
                 <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>link</span>
@@ -142,38 +171,11 @@ export default function ProjectDrawer({
                     </a>
                   </div>
                 )}
-                {selectedProject.team_members && selectedProject.team_members.length > 0 && (
-                  <div style={{ marginBottom: '1.25rem' }}>
-                    <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Team Members</h4>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {selectedProject.team_members.map((m, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.75rem', background: '#f3f4f6', borderRadius: '8px' }}>
-                          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#4F46E5', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 'bold' }}>{(m.name || 'U').charAt(0).toUpperCase()}</div>
-                          <span style={{ fontSize: '0.8rem', color: '#374151', fontWeight: '500' }}>{m.name}</span>
-                          <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>({m.role})</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <IdeaTeamSection ideaId={selectedProject.id} currentUser={currentUser} />
               </>
             )}
 
-            {/* ── Public-only: Apply CTA inline in body ────────────────────── */}
-            {/* Rendered only for public viewers so it is never duplicated in   */}
-            {/* the owner/admin view. The footer Apply button is suppressed for */}
-            {/* public viewers below, keeping a single CTA path per role.       */}
-            {!isPrivileged && selectedProject.is_hiring && selectedProject.author_id !== currentUser?.id && (
-              <div style={{ margin: '0.5rem 0 1.5rem 0' }}>
-                <button
-                  onClick={() => setIsApplying(true)}
-                  style={{ width: '100%', padding: '0.85rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', boxShadow: '0 4px 14px rgba(79,70,229,0.35)' }}
-                >
-                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>work</span>
-                  Apply for Position
-                </button>
-              </div>
-            )}
+            {/* Apply CTA removed — hiring lives on the Hiring page now */}
 
             {/* Meta Info */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -183,28 +185,7 @@ export default function ProjectDrawer({
                   Approved by <strong>{selectedProject.admin_profile.full_name}</strong>
                 </div>
               )}
-              {selectedProject.is_hiring && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.75rem', background: '#dbeafe', borderRadius: '8px', fontSize: '0.8rem', color: '#1e40af' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '1rem' }}>work</span>
-                  Hiring {selectedProject.hiring_openings} position(s)
-                </div>
-              )}
             </div>
-
-            {/* Hiring Skills */}
-            {selectedProject.is_hiring && selectedProject.hiring_skills?.length > 0 && (
-              <div style={{ marginBottom: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.85rem', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Skills Wanted</h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {selectedProject.hiring_skills.map((s, i) => (
-                    <span key={i} style={{ padding: '0.3rem 0.7rem', background: '#e0e7ff', color: '#3730a3', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '500' }}>{s}</span>
-                  ))}
-                </div>
-                {selectedProject.hiring_commitment && (
-                  <p style={{ margin: '0.5rem 0 0 0', fontSize: '0.8rem', color: '#6b7280' }}>⏱ Commitment: {selectedProject.hiring_commitment}</p>
-                )}
-              </div>
-            )}
 
             {/* Divider */}
             <div style={{ height: '1px', background: '#e5e7eb', margin: '0.5rem 0 1.5rem 0' }}></div>
@@ -280,168 +261,10 @@ export default function ProjectDrawer({
               </div>
             )}
 
-            {/* Applicant Review & Admin Approval */}
+            {/* Applicant Review — moved to YourIdeas; only keep Admin Approval */}
             {activeTab !== 'marketplace' && (
               <>
-                {selectedProject.author_id === currentUser?.id && (() => {
-                  const pendingRequests = selectedProject.team_requests?.filter(r => r.status === 'pending') || [];
-                  const processedRequests = selectedProject.team_requests?.filter(r => r.status !== 'pending') || [];
 
-                  const handleRequestAction = async (req, status) => {
-                    const { error } = await supabase
-                      .from('team_requests')
-                      .update({ status })
-                      .eq('id', req.id);
-                    if (error) {
-                      alert(error.message);
-                    } else {
-                      alert(`Request ${status} successfully!`);
-                      fetchIdeas();
-                      
-                      const { sendNotification } = await import('../../store/notificationStore').then(m => m.useNotificationStore.getState());
-                      await sendNotification({
-                        userId: req.user_id,
-                        title: `Application ${status === 'accepted' ? 'Accepted' : 'Rejected'}`,
-                        message: `Your application to join "${selectedProject.project_title}" was ${status}.`,
-                        type: 'application',
-                        link: `/dashboard/marketplace/${selectedProject.id}`
-                      });
-                    }
-                  };
-
-                  return (
-                    <div style={{ marginBottom: '1.25rem' }}>
-                      {/* Section Title */}
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-                        <span className="material-symbols-outlined" style={{ fontSize: '1.5rem', color: '#4F46E5' }}>group</span>
-                        <h4 style={{ margin: 0, color: '#111827', fontWeight: '600', fontSize: '1rem' }}>
-                          Applicants ({pendingRequests.length} pending)
-                        </h4>
-                      </div>
-
-                      {/* Pending Applicants */}
-                      {pendingRequests.length === 0 ? (
-                        <div style={{ background: '#f9fafb', border: '1px dashed #e5e7eb', padding: '1.5rem', borderRadius: '12px', textAlign: 'center', color: '#6b7280', fontSize: '0.9rem' }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: '2rem', color: '#d1d5db', display: 'block', marginBottom: '0.5rem' }}>person_search</span>
-                          No pending applicants right now.
-                        </div>
-                      ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                          {pendingRequests.map(req => (
-                            <div key={req.id} style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
-                              {/* Applicant Header */}
-                              <div style={{ padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1rem', flexShrink: 0 }}>
-                                    {(req.profiles?.full_name || 'U').charAt(0).toUpperCase()}
-                                  </div>
-                                  <div>
-                                    <h5 style={{ margin: 0, color: '#111827', fontSize: '0.95rem', fontWeight: '600' }}>{req.profiles?.full_name || 'Unknown'}</h5>
-                                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem', flexWrap: 'wrap' }}>
-                                      {req.profiles?.email && (
-                                        <span style={{ color: '#6b7280', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                          <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>mail</span>
-                                          {req.profiles.email}
-                                        </span>
-                                      )}
-                                      {req.profiles?.mobile_number && (
-                                        <span style={{ color: '#6b7280', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                                          <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>call</span>
-                                          {req.profiles.mobile_number}
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                {req.linkedin_link && (
-                                  <a href={req.linkedin_link} target="_blank" rel="noreferrer" style={{ color: '#4F46E5', textDecoration: 'none', fontWeight: '500', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.35rem 0.6rem', background: '#e0e7ff', borderRadius: '6px', flexShrink: 0 }}>
-                                    <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>link</span>
-                                    LinkedIn
-                                  </a>
-                                )}
-                                <button
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    const { startConversation } = await import('../../store/chatStore').then(m => m.useChatStore.getState());
-                                    const convId = await startConversation(currentUser.id, req.user_id);
-                                    if (convId) {
-                                      handleCloseDrawer();
-                                      navigate(`/dashboard/messages/${convId}`);
-                                    }
-                                  }}
-                                  className="chat-icon-btn"
-                                  title={`Message ${req.profiles?.full_name || 'applicant'}`}
-                                >
-                                  <span className="material-symbols-outlined" style={{ fontSize: '0.9rem' }}>chat</span>
-                                </button>
-                              </div>
-
-                              {/* Bio & Reason */}
-                              <div style={{ padding: '0 1.25rem 1rem 1.25rem' }}>
-                                <div style={{ background: '#f9fafb', padding: '0.75rem', borderRadius: '8px', marginBottom: '0.75rem' }}>
-                                  <h6 style={{ margin: '0 0 0.25rem 0', fontSize: '0.7rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Bio & Skills</h6>
-                                  <p style={{ margin: 0, color: '#374151', fontSize: '0.85rem', lineHeight: '1.5' }}>{req.bio || 'Not provided'}</p>
-                                </div>
-                                <div style={{ background: '#f9fafb', padding: '0.75rem', borderRadius: '8px' }}>
-                                  <h6 style={{ margin: '0 0 0.25rem 0', fontSize: '0.7rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: '600' }}>Why they want to join</h6>
-                                  <p style={{ margin: 0, color: '#374151', fontSize: '0.85rem', lineHeight: '1.5' }}>{req.reason || 'Not provided'}</p>
-                                </div>
-                              </div>
-
-                              {/* Actions */}
-                              <div style={{ display: 'flex', borderTop: '1px solid #e5e7eb' }}>
-                                <button
-                                  onClick={() => handleRequestAction(req, 'accepted')}
-                                  style={{ flex: 1, padding: '0.7rem', background: '#fff', color: '#10b981', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem', transition: 'background 0.2s', borderRight: '1px solid #e5e7eb' }}
-                                  onMouseOver={e => e.currentTarget.style.background = '#ecfdf5'}
-                                  onMouseOut={e => e.currentTarget.style.background = '#fff'}
-                                >
-                                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>check_circle</span>
-                                  Accept
-                                </button>
-                                <button
-                                  onClick={() => handleRequestAction(req, 'rejected')}
-                                  style={{ flex: 1, padding: '0.7rem', background: '#fff', color: '#ef4444', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem', transition: 'background 0.2s' }}
-                                  onMouseOver={e => e.currentTarget.style.background = '#fef2f2'}
-                                  onMouseOut={e => e.currentTarget.style.background = '#fff'}
-                                >
-                                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>cancel</span>
-                                  Reject
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Processed Requests */}
-                      {processedRequests.length > 0 && (
-                        <div style={{ marginTop: '1rem' }}>
-                          <h5 style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Processed</h5>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            {processedRequests.map(req => (
-                              <div key={req.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.75rem', background: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#e5e7eb', color: '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.75rem' }}>
-                                    {(req.profiles?.full_name || 'U').charAt(0).toUpperCase()}
-                                  </div>
-                                  <span style={{ color: '#374151', fontSize: '0.85rem', fontWeight: '500' }}>{req.profiles?.full_name || 'Unknown'}</span>
-                                </div>
-                                <span style={{
-                                  padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.7rem', fontWeight: '600',
-                                  background: req.status === 'accepted' ? '#d1fae5' : '#fee2e2',
-                                  color: req.status === 'accepted' ? '#065f46' : '#991b1b'
-                                }}>
-                                  {req.status === 'accepted' ? '✓ Accepted' : '✗ Rejected'}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
 
                 {/* Admin Approval Section */}
                 {currentUserProfile?.user_role === 'admin' && !selectedProject.is_approved && (
@@ -469,7 +292,7 @@ export default function ProjectDrawer({
                           alert('Idea approved successfully!');
                           fetchIdeas();
                           handleCloseDrawer();
-                          
+
                           // Send notification
                           const { sendNotification } = await import('../../store/notificationStore').then(m => m.useNotificationStore.getState());
                           await sendNotification({
@@ -494,28 +317,9 @@ export default function ProjectDrawer({
 
           {/* Footer */}
           <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', gap: '0.75rem', position: 'sticky', bottom: 0, background: '#fff', borderRadius: '0 0 16px 16px' }}>
-            {/* Apply button only renders in the footer for privileged views      */}
-            {/* (owner / admin). Public viewers get the inline CTA in the body   */}
-            {/* above so the button is never duplicated.                          */}
-            {isPrivileged && activeTab === 'marketplace' && selectedProject.is_hiring && selectedProject.author_id !== currentUser?.id ? (
-              <>
-                <button onClick={() => setIsApplying(true)} style={{ flex: 1, padding: '0.75rem', background: '#4F46E5', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>work</span>
-                  Apply for Position
-                </button>
-                <button style={{ padding: '0.75rem', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Share">
-                  <span className="material-symbols-outlined" style={{ fontSize: '1.1rem' }}>share</span>
-                </button>
-              </>
-            ) : activeTab === 'marketplace' && isPrivileged ? (
-              <button style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#6b7280', border: 'none', borderRadius: '8px', fontWeight: '500', fontSize: '0.9rem' }} disabled>
-                Not hiring right now
-              </button>
-            ) : (
-              <button style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem' }} onClick={handleCloseDrawer}>
-                Close
-              </button>
-            )}
+            <button style={{ flex: 1, padding: '0.75rem', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.9rem' }} onClick={handleCloseDrawer}>
+              Close
+            </button>
           </div>
         </div>
       </div>

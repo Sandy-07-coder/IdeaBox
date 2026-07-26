@@ -128,7 +128,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="fd-container" style={{ overflowX: 'hidden' }}>
+    <div className="fd-container">
       {/* Sidebar */}
       <LeftSidebar
         activeTab={activeTab}

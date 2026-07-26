@@ -205,90 +205,20 @@ export default function IdeaCard({ project, onClick, activeTab, currentUser, cur
 
       {/* ── Bottom Button Row ───────────────────────────────────────────── */}
       <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.625rem', width: '100%' }}>
-        {activeTab === 'your-ideas' && project.is_approved ? (
-          <>
-            {/* Primary: View Details */}
-            <button
-              className="fd-details-btn"
-              style={{
-                flex: 1, margin: 0,
-                background: '#1d4ed8', color: '#ffffff',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                transition: 'background-color 0.15s ease',
-              }}
-              onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-              onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-            >
-              View Details
-              <ArrowRightIcon />
-            </button>
-
-            {/* Secondary: Hire / Stop Hire */}
-            {!project.is_hiring ? (
-              <button
-                onClick={(e) => { e.stopPropagation(); onHire && onHire(project); }}
-                style={{
-                  flex: 1, padding: '0.65rem',
-                  background: '#e0e7ff', color: '#3730a3',
-                  border: 'none', borderRadius: '8px', cursor: 'pointer',
-                  fontWeight: '600', fontSize: '0.85rem', fontFamily: 'inherit',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                  margin: 0, zIndex: 5,
-                }}
-              >
-                <UserPlusIcon />
-                Hire
-              </button>
-            ) : (
-              <div style={{ flex: 1, display: 'flex', gap: '0.5rem' }}>
-                {/* Destructive: Stop Hire — #b91c1c on #fee2e2 ≈ 5.9:1 contrast ✓ WCAG AA */}
-                <button
-                  onClick={(e) => { e.stopPropagation(); onStopHire && onStopHire(project.id); }}
-                  style={{
-                    flex: 1, padding: '0.65rem',
-                    background: '#fee2e2', color: '#b91c1c',
-                    border: 'none', borderRadius: '8px', cursor: 'pointer',
-                    fontWeight: '600', fontSize: '0.85rem', fontFamily: 'inherit',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                    margin: 0, zIndex: 5,
-                  }}
-                >
-                  <StopCircleIcon />
-                  Stop Hire
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); onEditHire && onEditHire(project); }}
-                  title="Edit Hiring Details"
-                  style={{
-                    padding: '0.65rem 0.75rem',
-                    background: '#f3f4f6', color: '#374151',
-                    border: 'none', borderRadius: '8px', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: 0, zIndex: 5,
-                  }}
-                >
-                  <EditIcon />
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          /* Default: View Details (primary solid) */
-          <button
-            className="fd-details-btn"
-            style={{
-              width: '100%', margin: 0,
-              background: '#1d4ed8', color: '#ffffff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              transition: 'background-color 0.15s ease',
-            }}
-            onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
-            onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
-          >
-            View Details
-            <ArrowRightIcon />
-          </button>
-        )}
+        <button
+          className="fd-details-btn"
+          style={{
+            width: '100%', margin: 0,
+            background: '#1d4ed8', color: '#ffffff',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+            transition: 'background-color 0.15s ease',
+          }}
+          onMouseOver={e => e.currentTarget.style.backgroundColor = '#1e40af'}
+          onMouseOut={e  => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+        >
+          View Details
+          <ArrowRightIcon />
+        </button>
       </div>
     </div>
   );
