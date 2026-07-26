@@ -32,6 +32,14 @@ export default function LeftSidebar({ activeTab, setActiveTab, isAdmin, isSideba
           <span>Your Ideas</span>
         </a>
         <a
+          className={`fd-nav-item ${activeTab === 'hiring' ? 'active' : ''}`}
+          href="#"
+          onClick={(e) => { e.preventDefault(); setActiveTab('hiring'); }}
+        >
+          <span className="material-symbols-outlined">work</span>
+          <span>Hiring</span>
+        </a>
+        <a
           className={`fd-nav-item ${activeTab === 'events' ? 'active' : ''}`}
           href="#"
           onClick={(e) => { e.preventDefault(); setActiveTab('events'); }}

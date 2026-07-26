@@ -1,0 +1,749 @@
+/* ============================================================
+   Hiring Page Styles — IdeaBox
+   Follows the same design language as dashboard.css
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.hr-page {
+  padding-bottom: 4rem;
+}
+
+/* ── Section header (reuses fd-section-header pattern) ──── */
+.hr-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hr-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--fd-on-surface);
+  margin: 0;
+}
+
+/* ── Tabs ────────────────────────────────────────────────── */
+.hr-tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--fd-surface-container-low);
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+  margin-bottom: 2rem;
+  width: fit-content;
+}
+
+.hr-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 0.55rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fd-on-surface-variant);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.hr-tab-btn.active {
+  background: var(--fd-surface-container-lowest);
+  color: var(--fd-primary);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.hr-tab-btn:not(.active):hover {
+  color: var(--fd-on-surface);
+}
+
+/* ── Primary action button ───────────────────────────────── */
+.hr-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.25rem;
+  background: linear-gradient(135deg, var(--fd-primary) 0%, #4338ca 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.hr-create-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+/* ── Post cards grid ─────────────────────────────────────── */
+.hr-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .hr-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hr-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Hiring post card ────────────────────────────────────── */
+.hr-card {
+  background: var(--fd-surface-container-lowest);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  outline: 1px solid var(--fd-ghost-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.hr-card:hover {
+  box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.hr-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hr-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fd-on-surface);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.hr-card-project {
+  font-size: 0.78rem;
+  color: var(--fd-primary);
+  font-weight: 600;
+  margin: 0;
+}
+
+.hr-status-badge {
+  flex-shrink: 0;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hr-status-badge.open {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.hr-status-badge.closed {
+  background: var(--fd-surface-container);
+  color: var(--fd-outline);
+}
+
+.hr-card-desc {
+  font-size: 0.85rem;
+  color: var(--fd-on-surface-variant);
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Skills tags */
+.hr-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hr-skill-tag {
+  padding: 0.2rem 0.6rem;
+  background: var(--fd-tertiary-container);
+  color: var(--fd-on-tertiary-container);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Meta row */
+.hr-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--fd-on-surface-variant);
+}
+
+.hr-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.hr-meta-item .material-symbols-outlined {
+  font-size: 1rem;
+  color: var(--fd-primary);
+}
+
+/* Card action row */
+.hr-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--fd-ghost-border);
+}
+
+.hr-btn {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.6rem;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+
+.hr-btn:hover {
+  transform: scale(1.02);
+}
+
+.hr-btn-primary {
+  background: var(--fd-primary);
+  color: #fff;
+}
+
+.hr-btn-primary:hover {
+  background: var(--fd-primary-dim);
+}
+
+.hr-btn-secondary {
+  background: var(--fd-secondary-container);
+  color: var(--fd-on-secondary-container);
+}
+
+.hr-btn-secondary:hover {
+  background: var(--fd-surface-container);
+}
+
+.hr-btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.hr-btn-danger:hover {
+  background: #fecaca;
+}
+
+.hr-btn-ghost {
+  background: transparent;
+  color: var(--fd-outline);
+  border: 1px solid var(--fd-ghost-border);
+}
+
+.hr-btn-ghost:hover {
+  background: var(--fd-surface-container-low);
+  color: var(--fd-on-surface);
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.hr-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--fd-on-surface-variant);
+}
+
+.hr-empty .material-symbols-outlined {
+  font-size: 3rem;
+  color: var(--fd-outline);
+}
+
+.hr-empty h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--fd-on-surface);
+  margin: 0;
+}
+
+.hr-empty p {
+  font-size: 0.875rem;
+  margin: 0;
+  max-width: 28rem;
+  line-height: 1.6;
+}
+
+/* ── Modal overlay ───────────────────────────────────────── */
+.hr-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.hr-modal {
+  background: var(--fd-surface-container-lowest);
+  border-radius: 1.25rem;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+  animation: hr-modal-in 0.2s ease;
+}
+
+@keyframes hr-modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.hr-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.75rem 1.75rem 0;
+  gap: 1rem;
+}
+
+.hr-modal-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--fd-on-surface);
+  margin: 0 0 0.25rem 0;
+}
+
+.hr-modal-subtitle {
+  font-size: 0.8rem;
+  color: var(--fd-on-surface-variant);
+  margin: 0;
+}
+
+.hr-modal-close {
+  padding: 0.35rem;
+  background: var(--fd-surface-container-low);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: var(--fd-on-surface-variant);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.hr-modal-close:hover {
+  background: var(--fd-surface-container);
+}
+
+.hr-modal-body {
+  padding: 1.5rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Form fields ─────────────────────────────────────────── */
+.hr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hr-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--fd-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hr-input,
+.hr-textarea,
+.hr-select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--fd-surface-container-low);
+  border: 1.5px solid var(--fd-outline-variant);
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--fd-on-surface);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hr-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.hr-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  cursor: pointer;
+}
+
+.hr-input:focus,
+.hr-textarea:focus,
+.hr-select:focus {
+  border-color: var(--fd-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* Stepper for openings */
+.hr-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hr-stepper-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1.5px solid var(--fd-outline-variant);
+  background: var(--fd-surface-container-low);
+  cursor: pointer;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fd-on-surface);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.hr-stepper-btn:hover {
+  background: var(--fd-primary-container);
+  border-color: var(--fd-primary);
+  color: var(--fd-on-primary-container);
+}
+
+.hr-stepper-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--fd-on-surface);
+  min-width: 2rem;
+  text-align: center;
+}
+
+/* Skills tag input */
+.hr-tags-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hr-tags-input-row .hr-input {
+  flex: 1;
+}
+
+.hr-tag-add-btn {
+  padding: 0 0.85rem;
+  background: var(--fd-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.hr-tag-add-btn:hover {
+  background: var(--fd-primary-dim);
+}
+
+.hr-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+
+.hr-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--fd-tertiary-container);
+  color: var(--fd-on-tertiary-container);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.hr-tag-remove {
+  cursor: pointer;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+}
+
+.hr-tag-remove:hover {
+  opacity: 1;
+}
+
+/* ── Project picker ──────────────────────────────────────── */
+.hr-project-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.hr-project-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid var(--fd-outline-variant);
+  background: var(--fd-surface-container-lowest);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.hr-project-option.selected {
+  border-color: var(--fd-primary);
+  background: var(--fd-primary-container);
+}
+
+.hr-project-option:hover:not(.selected) {
+  border-color: var(--fd-outline);
+  background: var(--fd-surface-container-low);
+}
+
+.hr-project-option-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--fd-on-surface);
+}
+
+/* ── Error message ───────────────────────────────────────── */
+.hr-error {
+  padding: 0.65rem 0.9rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 0.6rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+}
+
+/* ── Modal footer ────────────────────────────────────────── */
+.hr-modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 1.75rem 1.75rem;
+}
+
+.hr-modal-footer .hr-btn {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* ── Applicant list (owner review view) ─────────────────── */
+.hr-applicant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hr-applicant-card {
+  background: var(--fd-surface-container-lowest);
+  border-radius: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  outline: 1px solid var(--fd-ghost-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: box-shadow 0.2s;
+}
+
+.hr-applicant-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.hr-applicant-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hr-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--fd-primary) 0%, #7c3aed 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.hr-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hr-applicant-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--fd-on-surface);
+}
+
+.hr-applicant-note {
+  font-size: 0.8rem;
+  color: var(--fd-on-surface-variant);
+  line-height: 1.5;
+}
+
+.hr-applicant-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.hr-applicant-actions .hr-btn {
+  flex: none;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+/* Application status badge (for applicant tracking) */
+.hr-app-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hr-app-status.pending  { background: #fef9c3; color: #854d0e; }
+.hr-app-status.accepted { background: #dcfce7; color: #15803d; }
+.hr-app-status.rejected { background: #fee2e2; color: #991b1b; }
+.hr-app-status.closed   { background: var(--fd-surface-container); color: var(--fd-outline); }
+
+/* ── Skeleton loader ─────────────────────────────────────── */
+.hr-skeleton {
+  background: linear-gradient(90deg, #f0f4f8 25%, #e2e8f0 50%, #f0f4f8 75%);
+  background-size: 200% 100%;
+  animation: hr-shimmer 1.4s infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes hr-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.hr-divider {
+  height: 1px;
+  background: var(--fd-ghost-border);
+  margin: 0.25rem 0;
+}
+
+/* ── Back button (inside panel) ──────────────────────────── */
+.hr-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--fd-surface-container-low);
+  border: none;
+  border-radius: 0.6rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fd-on-surface-variant);
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-bottom: 1.25rem;
+}
+
+.hr-back-btn:hover {
+  background: var(--fd-surface-container);
+  color: var(--fd-on-surface);
+}
+
+/* ── Responsive tweaks ───────────────────────────────────── */
+@media (max-width: 640px) {
+  .hr-tabs {
+    width: 100%;
+  }
+
+  .hr-tab-btn {
+    flex: 1;
+    justify-content: center;
+    font-size: 0.78rem;
+    padding: 0.5rem 0.5rem;
+  }
+
+  .hr-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hr-modal {
+    max-height: 95vh;
+  }
+}

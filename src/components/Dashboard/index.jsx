@@ -11,6 +11,7 @@ import ManageIdeas from './ManageIdeas';
 import Messages from './Messages';
 import Settings from './Settings';
 import ProjectDrawer from './ProjectDrawer';
+import Hiring from './Hiring';
 import '../../design/dashboard.css';
 
 export default function Dashboard() {
@@ -111,6 +112,8 @@ export default function Dashboard() {
         return <Marketplace projects={projects} loading={loading} currentUser={currentUser} currentUserProfile={currentUserProfile} handleOpenDrawer={handleOpenDrawer} />;
       case 'your-ideas':
         return <YourIdeas projects={projects} loading={loading} currentUser={currentUser} currentUserProfile={currentUserProfile} handleOpenDrawer={handleOpenDrawer} fetchIdeas={fetchIdeas} />;
+      case 'hiring':
+        return <Hiring currentUser={currentUser} currentUserProfile={currentUserProfile} projects={projects} />;
       case 'events':
         return <Events events={events} loadingEvents={loadingEvents} />;
       case 'manage-ideas':
