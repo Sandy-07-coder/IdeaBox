@@ -216,10 +216,6 @@ export default function YourIdeas({ projects, loading, currentUser, currentUserP
       {!selected ? (
         /* ── Cards grid view ──────────────────────────────── */
         <>
-          <div className="fd-section-header">
-            <h2 className="fd-section-title">Your Ideas</h2>
-          </div>
-
           <div className="fd-grid">
             {loading ? (
               <p>Loading projects...</p>

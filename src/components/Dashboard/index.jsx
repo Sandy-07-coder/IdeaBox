@@ -142,21 +142,59 @@ export default function Dashboard() {
       <main className={`fd-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <TopHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-        <div style={{ padding: '0 1rem 2rem 1rem' }}>
+        <div style={{ padding: '2rem 1rem 2rem 1rem' }}>
           {/* Header Section */}
-          <header className="fd-header">
-            <div className="fd-header-content">
-              <h1 className="fd-header-title">
-                Welcome Back, {currentUserProfile?.full_name ? currentUserProfile.full_name.split(' ')[0] : 'Innovator'}! <br />
-
-              </h1>
-              <p className="fd-header-text">You have {projects.filter(p => p.author_id === currentUser?.id).reduce((acc, p) => acc + (p.team_requests?.filter(req => req.status === 'pending').length || 0), 0)} pending team requests.</p>
-            </div>
-            <button className="fd-post-btn" onClick={() => navigate('/post-idea')}>
-              <span className="material-symbols-outlined">add_circle</span>
-              POST YOUR IDEA
-            </button>
-          </header>
+          {activeTab === 'marketplace' ? (
+            /* ── Marketplace: full greeting + full-size button ── */
+            <header className="fd-header">
+              <div className="fd-header-content">
+                <h1 className="fd-header-title">
+                  Welcome Back, {currentUserProfile?.full_name ? currentUserProfile.full_name.split(' ')[0] : 'Innovator'}! <br />
+                </h1>
+                <p className="fd-header-text">You have {projects.filter(p => p.author_id === currentUser?.id).reduce((acc, p) => acc + (p.team_requests?.filter(req => req.status === 'pending').length || 0), 0)} pending team requests.</p>
+              </div>
+              <button className="fd-post-btn" onClick={() => navigate('/post-idea')}>
+                <span className="material-symbols-outlined">add_circle</span>
+                POST YOUR IDEA
+              </button>
+            </header>
+          ) : activeTab === 'your-ideas' ? (
+            /* ── Your Ideas: section header + full-size button ── */
+            <header className="fd-header">
+              <div className="fd-header-content">
+                <h1 className="fd-header-title" style={{ fontSize: '1.75rem', margin: '0 0 0.35rem 0' }}>Your Ideas</h1>
+                <p className="fd-header-text" style={{ fontSize: '0.95rem' }}>Manage, track, and refine all the ideas you&apos;ve submitted.</p>
+              </div>
+              <button className="fd-post-btn" onClick={() => navigate('/post-idea')}>
+                <span className="material-symbols-outlined">add_circle</span>
+                POST YOUR IDEA
+              </button>
+            </header>
+          ) : (
+            /* ── All other tabs: section header, no button ── */
+            <header className="fd-header" style={{ marginBottom: '2rem' }}>
+              <div className="fd-header-content">
+                <h1 className="fd-header-title" style={{ fontSize: '1.75rem', margin: '0 0 0.35rem 0' }}>
+                  {
+                    activeTab === 'hiring'   ? 'Hiring' :
+                    activeTab === 'events'   ? 'Networking & Events' :
+                    activeTab === 'messages' ? 'Messages' :
+                    activeTab === 'settings' ? 'Settings' :
+                    'Dashboard'
+                  }
+                </h1>
+                <p className="fd-header-text" style={{ fontSize: '0.95rem' }}>
+                  {
+                    activeTab === 'hiring'   ? 'Post open roles for your project or apply to join another team.' :
+                    activeTab === 'events'   ? 'Discover upcoming meetups, hackathons, and networking opportunities.' :
+                    activeTab === 'messages' ? 'Stay in touch with your collaborators and team members.' :
+                    activeTab === 'settings' ? 'Customize your account preferences and notification options.' :
+                    ''
+                  }
+                </p>
+              </div>
+            </header>
+          )}
 
           {/* Tab Content */}
           {renderContent()}

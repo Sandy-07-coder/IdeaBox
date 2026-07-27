@@ -7,7 +7,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
   const navigate = useNavigate();
   // Tabs: 'browse', 'manage', 'applications'
   const [activeTab, setActiveTab] = useState('browse');
-  
+
   // Data states
   const [hiringPosts, setHiringPosts] = useState([]);
   const [myApplications, setMyApplications] = useState([]);
@@ -88,7 +88,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     if (!createForm.idea_id) return alert("Please select a project.");
-    
+
     try {
       const { error } = await supabase.from('hiring_posts').insert([{
         idea_id: createForm.idea_id,
@@ -100,7 +100,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
         commitment: createForm.commitment
       }]);
       if (error) throw error;
-      
+
       setIsCreateModalOpen(false);
       setCreateForm({ idea_id: '', title: '', description: '', skills: [], newSkill: '', openings: 1, commitment: '' });
       fetchData();
@@ -121,7 +121,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
         resume_url: applyForm.resume_url || null
       }]);
       if (error) throw error;
-      
+
       alert("Application submitted successfully!");
       setIsApplyModalOpen(false);
       setPostToApply(null);
@@ -159,7 +159,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
       });
       if (error) throw error;
       if (!data.ok) throw new Error(data.message);
-      
+
       // Refresh applicants and posts
       viewApplicants(selectedPost);
       fetchData();
@@ -175,7 +175,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
         .update({ status: 'rejected' })
         .eq('id', appId);
       if (error) throw error;
-      
+
       viewApplicants(selectedPost);
     } catch (err) {
       alert("Error rejecting: " + err.message);
@@ -190,7 +190,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
       });
       if (error) throw error;
       if (!data.ok) throw new Error(data.message);
-      
+
       fetchData();
       if (selectedPost && selectedPost.id === postId) {
         setSelectedPost({ ...selectedPost, status: 'closed' });
@@ -210,7 +210,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
       });
       if (error) throw error;
       if (!data.ok) throw new Error(data.message);
-      
+
       alert("Openings updated!");
       setIsEditModalOpen(false);
       setPostToEdit(null);
@@ -235,27 +235,26 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
   // --- Renders ---
   return (
     <div className="hr-page">
-      <div className="hr-section-header">
-        <h2 className="hr-section-title">Hiring</h2>
-        {userProjects.length > 0 && (
+      {userProjects.length > 0 && (
+        <div className="hr-section-header" style={{ justifyContent: 'flex-end', marginBottom: '1rem' }}>
           <button className="hr-create-btn" onClick={() => setIsCreateModalOpen(true)}>
             <span className="material-symbols-outlined">add</span> Create Post
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {!selectedPost ? (
         <>
           <div className="hr-tabs">
             <button className={`hr-tab-btn ${activeTab === 'browse' ? 'active' : ''}`} onClick={() => setActiveTab('browse')}>
-              <span className="material-symbols-outlined">search</span> Browse Jobs
+              <span className="material-symbols-outlined">search</span> Jobs
             </button>
             <button className={`hr-tab-btn ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => setActiveTab('applications')}>
-              <span className="material-symbols-outlined">work_history</span> My Applications
+              <span className="material-symbols-outlined">work_history</span> Applications
             </button>
             {userProjects.length > 0 && (
               <button className={`hr-tab-btn ${activeTab === 'manage' ? 'active' : ''}`} onClick={() => setActiveTab('manage')}>
-                <span className="material-symbols-outlined">manage_accounts</span> Manage Hiring
+                <span className="material-symbols-outlined">manage_accounts</span> Manage
               </button>
             )}
           </div>
@@ -291,8 +290,8 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                         {post.skills_needed.map((s, i) => <span key={i} className="hr-skill-tag">{s}</span>)}
                       </div>
                       <div className="hr-card-actions">
-                        <button 
-                          className="hr-btn hr-btn-primary" 
+                        <button
+                          className="hr-btn hr-btn-primary"
                           onClick={() => {
                             if (post.idea.author_id === currentUser.id) {
                               alert("You cannot apply to your own project's hiring post.");
@@ -337,9 +336,9 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                         {post.status === 'open' && (
                           <>
                             <button className="hr-btn hr-btn-ghost" onClick={() => {
-                               setPostToEdit(post);
-                               setEditForm({ openings: post.total_openings });
-                               setIsEditModalOpen(true);
+                              setPostToEdit(post);
+                              setEditForm({ openings: post.total_openings });
+                              setIsEditModalOpen(true);
                             }}>
                               Edit Openings
                             </button>
@@ -371,7 +370,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                         </div>
                         <span className={`hr-app-status ${app.status}`}>{app.status}</span>
                       </div>
-                      <p className="hr-card-desc" style={{fontStyle: 'italic'}}>"{app.cover_note}"</p>
+                      <p className="hr-card-desc" style={{ fontStyle: 'italic' }}>"{app.cover_note}"</p>
                       <div className="hr-card-meta">
                         <span className="hr-meta-item">Applied on {new Date(app.created_at).toLocaleDateString()}</span>
                       </div>
@@ -388,11 +387,11 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
           <button className="hr-back-btn" onClick={() => setSelectedPost(null)}>
             <span className="material-symbols-outlined">arrow_back</span> Back to Posts
           </button>
-          
+
           <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'var(--fd-surface-container-lowest)', borderRadius: '1rem', border: '1px solid var(--fd-ghost-border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h3 className="hr-section-title" style={{marginBottom: '0.25rem'}}>{selectedPost.title}</h3>
+                <h3 className="hr-section-title" style={{ marginBottom: '0.25rem' }}>{selectedPost.title}</h3>
                 <p className="hr-card-project">for {selectedPost.idea?.project_title}</p>
               </div>
               <span className={`hr-status-badge ${selectedPost.status}`}>{selectedPost.status}</span>
@@ -412,8 +411,8 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
             ) : (
               applicants.map(app => (
                 <div key={app.id} className="hr-applicant-card">
-                  <div className="hr-applicant-top" style={{justifyContent: 'space-between'}}>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+                  <div className="hr-applicant-top" style={{ justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       <div className="hr-avatar">
                         {app.applicant?.avatar_url ? (
                           <img src={app.applicant.avatar_url} alt="" />
@@ -423,7 +422,7 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                       </div>
                       <div>
                         <div className="hr-applicant-name">{app.applicant?.full_name || 'Unknown User'}</div>
-                        <span className={`hr-app-status ${app.status}`} style={{marginTop: '0.25rem'}}>{app.status}</span>
+                        <span className={`hr-app-status ${app.status}`} style={{ marginTop: '0.25rem' }}>{app.status}</span>
                       </div>
                     </div>
                     <div className="hr-applicant-actions">
@@ -431,26 +430,26 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                       <button className="hr-btn hr-btn-secondary" onClick={() => handleMessage(app.applicant_id)}>Message</button>
                     </div>
                   </div>
-                  
+
                   <div className="hr-divider"></div>
-                  
-                  <div className="hr-field" style={{gap: '0.2rem'}}>
+
+                  <div className="hr-field" style={{ gap: '0.2rem' }}>
                     <span className="hr-label">Cover Note</span>
                     <p className="hr-applicant-note">"{app.cover_note}"</p>
                   </div>
-                  <div className="hr-field" style={{gap: '0.2rem'}}>
+                  <div className="hr-field" style={{ gap: '0.2rem' }}>
                     <span className="hr-label">Experience</span>
                     <p className="hr-applicant-note">{app.experience}</p>
                   </div>
                   {app.resume_url && (
-                    <div className="hr-field" style={{gap: '0.2rem'}}>
+                    <div className="hr-field" style={{ gap: '0.2rem' }}>
                       <span className="hr-label">Resume / Link</span>
-                      <a href={app.resume_url} target="_blank" rel="noopener noreferrer" style={{fontSize: '0.8rem', color: 'var(--fd-primary)'}}>{app.resume_url}</a>
+                      <a href={app.resume_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.8rem', color: 'var(--fd-primary)' }}>{app.resume_url}</a>
                     </div>
                   )}
-                  
+
                   {selectedPost.status === 'open' && app.status === 'pending' && (
-                    <div className="hr-applicant-actions" style={{marginTop: '0.5rem'}}>
+                    <div className="hr-applicant-actions" style={{ marginTop: '0.5rem' }}>
                       <button className="hr-btn hr-btn-primary" onClick={() => handleAccept(app.id)}>Accept</button>
                       <button className="hr-btn hr-btn-danger" onClick={() => handleReject(app.id)}>Reject</button>
                     </div>
@@ -475,12 +474,12 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            
+
             <form onSubmit={handleCreateSubmit}>
               <div className="hr-modal-body">
                 <div className="hr-field">
                   <label className="hr-label">Select Project *</label>
-                  <select required className="hr-select" value={createForm.idea_id} onChange={e => setCreateForm({...createForm, idea_id: e.target.value})}>
+                  <select required className="hr-select" value={createForm.idea_id} onChange={e => setCreateForm({ ...createForm, idea_id: e.target.value })}>
                     <option value="">-- Choose a project --</option>
                     {userProjects.map(p => (
                       <option key={p.id} value={p.id}>{p.project_title}</option>
@@ -489,16 +488,16 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                 </div>
                 <div className="hr-field">
                   <label className="hr-label">Role Title *</label>
-                  <input required className="hr-input" placeholder="e.g. Frontend Developer" value={createForm.title} onChange={e => setCreateForm({...createForm, title: e.target.value})} />
+                  <input required className="hr-input" placeholder="e.g. Frontend Developer" value={createForm.title} onChange={e => setCreateForm({ ...createForm, title: e.target.value })} />
                 </div>
                 <div className="hr-field">
                   <label className="hr-label">Description *</label>
-                  <textarea required className="hr-textarea" placeholder="Describe the responsibilities and what you are looking for..." value={createForm.description} onChange={e => setCreateForm({...createForm, description: e.target.value})} />
+                  <textarea required className="hr-textarea" placeholder="Describe the responsibilities and what you are looking for..." value={createForm.description} onChange={e => setCreateForm({ ...createForm, description: e.target.value })} />
                 </div>
                 <div className="hr-field">
                   <label className="hr-label">Skills Needed *</label>
                   <div className="hr-tags-input-row">
-                    <input className="hr-input" placeholder="Add a skill..." value={createForm.newSkill} onChange={e => setCreateForm({...createForm, newSkill: e.target.value})} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddSkill(); } }} />
+                    <input className="hr-input" placeholder="Add a skill..." value={createForm.newSkill} onChange={e => setCreateForm({ ...createForm, newSkill: e.target.value })} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddSkill(); } }} />
                     <button type="button" className="hr-tag-add-btn" onClick={handleAddSkill}><span className="material-symbols-outlined">add</span></button>
                   </div>
                   {createForm.skills.length > 0 && (
@@ -511,18 +510,18 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                     </div>
                   )}
                 </div>
-                <div style={{display: 'flex', gap: '1rem'}}>
-                  <div className="hr-field" style={{flex: 1}}>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div className="hr-field" style={{ flex: 1 }}>
                     <label className="hr-label">Openings *</label>
                     <div className="hr-stepper">
-                      <button type="button" className="hr-stepper-btn" onClick={() => setCreateForm({...createForm, openings: Math.max(1, createForm.openings - 1)})}>-</button>
+                      <button type="button" className="hr-stepper-btn" onClick={() => setCreateForm({ ...createForm, openings: Math.max(1, createForm.openings - 1) })}>-</button>
                       <span className="hr-stepper-val">{createForm.openings}</span>
-                      <button type="button" className="hr-stepper-btn" onClick={() => setCreateForm({...createForm, openings: createForm.openings + 1})}>+</button>
+                      <button type="button" className="hr-stepper-btn" onClick={() => setCreateForm({ ...createForm, openings: createForm.openings + 1 })}>+</button>
                     </div>
                   </div>
-                  <div className="hr-field" style={{flex: 2}}>
+                  <div className="hr-field" style={{ flex: 2 }}>
                     <label className="hr-label">Commitment *</label>
-                    <select required className="hr-select" value={createForm.commitment} onChange={e => setCreateForm({...createForm, commitment: e.target.value})}>
+                    <select required className="hr-select" value={createForm.commitment} onChange={e => setCreateForm({ ...createForm, commitment: e.target.value })}>
                       <option value="">Select commitment</option>
                       <option value="2-5 hrs/week">2-5 hrs/week</option>
                       <option value="5-10 hrs/week">5-10 hrs/week</option>
@@ -555,20 +554,20 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            
+
             <form onSubmit={handleApplySubmit}>
               <div className="hr-modal-body">
                 <div className="hr-field">
                   <label className="hr-label">Cover Note *</label>
-                  <textarea required className="hr-textarea" placeholder="Why are you interested in this role?" value={applyForm.cover_note} onChange={e => setApplyForm({...applyForm, cover_note: e.target.value})} />
+                  <textarea required className="hr-textarea" placeholder="Why are you interested in this role?" value={applyForm.cover_note} onChange={e => setApplyForm({ ...applyForm, cover_note: e.target.value })} />
                 </div>
                 <div className="hr-field">
                   <label className="hr-label">Relevant Experience *</label>
-                  <textarea required className="hr-textarea" placeholder="Briefly describe your experience related to the skills needed." value={applyForm.experience} onChange={e => setApplyForm({...applyForm, experience: e.target.value})} />
+                  <textarea required className="hr-textarea" placeholder="Briefly describe your experience related to the skills needed." value={applyForm.experience} onChange={e => setApplyForm({ ...applyForm, experience: e.target.value })} />
                 </div>
                 <div className="hr-field">
                   <label className="hr-label">Resume / Portfolio Link (Optional)</label>
-                  <input type="url" className="hr-input" placeholder="https://..." value={applyForm.resume_url} onChange={e => setApplyForm({...applyForm, resume_url: e.target.value})} />
+                  <input type="url" className="hr-input" placeholder="https://..." value={applyForm.resume_url} onChange={e => setApplyForm({ ...applyForm, resume_url: e.target.value })} />
                 </div>
               </div>
               <div className="hr-modal-footer">
@@ -593,20 +592,20 @@ export default function Hiring({ currentUser, currentUserProfile, projects }) {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            
+
             <form onSubmit={handleEditOpeningsSubmit}>
               <div className="hr-modal-body">
                 <div className="hr-field">
                   <label className="hr-label">Total Openings *</label>
-                  <p style={{fontSize: '0.8rem', color: 'var(--fd-on-surface-variant)', margin: '0 0 0.5rem 0'}}>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--fd-on-surface-variant)', margin: '0 0 0.5rem 0' }}>
                     Currently accepted: {postToEdit.accepted_count}
                   </p>
                   <div className="hr-stepper">
-                    <button type="button" className="hr-stepper-btn" onClick={() => setEditForm({...editForm, openings: Math.max(postToEdit.accepted_count, editForm.openings - 1)})}>-</button>
+                    <button type="button" className="hr-stepper-btn" onClick={() => setEditForm({ ...editForm, openings: Math.max(postToEdit.accepted_count, editForm.openings - 1) })}>-</button>
                     <span className="hr-stepper-val">{editForm.openings}</span>
-                    <button type="button" className="hr-stepper-btn" onClick={() => setEditForm({...editForm, openings: editForm.openings + 1})}>+</button>
+                    <button type="button" className="hr-stepper-btn" onClick={() => setEditForm({ ...editForm, openings: editForm.openings + 1 })}>+</button>
                   </div>
-                  <p style={{fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem'}}>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.5rem' }}>
                     Note: You cannot decrease total openings below the number of currently accepted applicants.
                   </p>
                 </div>

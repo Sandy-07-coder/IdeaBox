@@ -29,9 +29,6 @@ export default function Events({ events, loadingEvents }) {
 
   return (
     <section>
-      <div className="fd-section-header">
-        <h2 className="fd-section-title">Networking & Events</h2>
-      </div>
 
       {loadingEvents ? (
         <p style={{ marginTop: '2rem' }}>Loading events...</p>

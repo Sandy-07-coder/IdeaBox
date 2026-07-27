@@ -191,10 +191,6 @@ export default function Messages() {
 
   return (
     <section>
-      <div className="fd-section-header">
-        <h2 className="fd-section-title">Messages</h2>
-      </div>
-
       <div className="chat-container" style={{ position: 'relative' }}>
         {/* Conversation List Sidebar */}
         <div className={`chat-sidebar ${isMobileShowChat ? 'hidden' : ''}`}>

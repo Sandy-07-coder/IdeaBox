@@ -98,16 +98,6 @@ export default function LeftSidebar({ activeTab, setActiveTab, isAdmin, isSideba
             <span className="fd-nav-label">Settings</span>
           </a>
         </nav>
-
-        <div className="fd-progress-box">
-          <div className="fd-progress-card">
-            <h4 className="fd-progress-title">Your Growth</h4>
-            <div className="fd-progress-track">
-              <div className="fd-progress-fill"></div>
-            </div>
-            <p className="fd-progress-stage">Stage: Pre-Seed</p>
-          </div>
-        </div>
       </aside>
     </>
   );
