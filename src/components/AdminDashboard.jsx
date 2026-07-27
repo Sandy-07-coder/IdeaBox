@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useUserStore, useIdeaStore, useEventStore } from '../store';
+import { useChatStore } from '../store/chatStore';
 import ManageIdeas from './Dashboard/ManageIdeas';
 import ProjectDrawer from './Dashboard/ProjectDrawer';
 import TopHeader from './header/TopHeader';
@@ -11,12 +12,27 @@ import Messages from './Dashboard/Messages';
 import AdminNotifications from './Admin/AdminNotifications';
 import '../design/dashboard.css';
 
+/** Small circular notification badge — hidden when count is 0. */
+function NavBadge({ count }) {
+  if (!count || count === 0) return null;
+  const label = count > 99 ? '99+' : String(count);
+  return (
+    <span
+      className="fd-nav-badge"
+      aria-label={`${count} unread notification${count !== 1 ? 's' : ''}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 export default function AdminDashboard() {
   const { tab, itemId } = useParams();
   const navigate = useNavigate();
   const { currentUser, currentUserProfile, fetchUser } = useUserStore();
   const { projects, loadingIdeas: loading, fetchIdeas } = useIdeaStore();
   const { events, fetchEvents, refreshEvents } = useEventStore();
+  const { unreadCount: msgUnread, fetchUnreadCount, subscribeToGlobalMessages, cleanup: cleanupChat } = useChatStore();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -32,6 +48,14 @@ export default function AdminDashboard() {
     fetchIdeas();
     fetchEvents();
   }, [fetchUser, fetchIdeas, fetchEvents]);
+
+  // Bootstrap message unread count + real-time subscription
+  useEffect(() => {
+    if (!currentUser?.id) return;
+    fetchUnreadCount(currentUser.id);
+    subscribeToGlobalMessages(currentUser.id);
+    return () => cleanupChat();
+  }, [currentUser?.id]);
 
   // Sync selectedProject with URL itemId
   useEffect(() => {
@@ -93,7 +117,9 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/overview'); }}
           >
-            <span className="material-symbols-outlined">dashboard</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">dashboard</span>
+            </span>
             <span>Overview</span>
           </a>
           <a
@@ -101,7 +127,10 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/manage-ideas'); }}
           >
-            <span className="material-symbols-outlined">settings_suggest</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">settings_suggest</span>
+              <NavBadge count={stats.pendingApprovals} />
+            </span>
             <span>Manage Ideas</span>
           </a>
           <a
@@ -109,7 +138,9 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/events'); }}
           >
-            <span className="material-symbols-outlined">event</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">event</span>
+            </span>
             <span>Events</span>
           </a>
           <a
@@ -117,7 +148,9 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/users'); }}
           >
-            <span className="material-symbols-outlined">group</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">group</span>
+            </span>
             <span>Users</span>
           </a>
           <a
@@ -125,7 +158,10 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/messages'); }}
           >
-            <span className="material-symbols-outlined">chat</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">chat</span>
+              <NavBadge count={msgUnread} />
+            </span>
             <span>Messages</span>
           </a>
           <a
@@ -133,7 +169,9 @@ export default function AdminDashboard() {
             href="#"
             onClick={(e) => { e.preventDefault(); navigate('/admin/notifications'); }}
           >
-            <span className="material-symbols-outlined">campaign</span>
+            <span className="fd-nav-icon-wrap">
+              <span className="material-symbols-outlined">campaign</span>
+            </span>
             <span>Send Notifications</span>
           </a>
         </nav>
