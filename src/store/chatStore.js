@@ -12,6 +12,7 @@ export const useChatStore = create((set, get) => ({
   typingUsers: {},
   realtimeChannel: null,
   presenceChannel: null,
+  globalChannel: null,   // ← tracks the global message subscription
 
   // Fetch all conversations for the current user
   fetchConversations: async (userId) => {
@@ -187,10 +188,19 @@ export const useChatStore = create((set, get) => ({
     set({ realtimeChannel: channel });
   },
 
-  // Subscribe to global messages (for unread count in header)
+  // Subscribe to global messages (for unread count badge on Messages nav item).
+  // Uses a user-scoped channel name so multiple calls never collide, and tears
+  // down any previous subscription before creating a new one.
   subscribeToGlobalMessages: (userId) => {
+    // Tear down any existing global channel first
+    const prev = get().globalChannel;
+    if (prev) {
+      supabase.removeChannel(prev);
+      set({ globalChannel: null });
+    }
+
     const channel = supabase
-      .channel('global-messages')
+      .channel(`global-messages:${userId}`)   // user-scoped → no collision
       .on(
         'postgres_changes',
         {
@@ -200,7 +210,6 @@ export const useChatStore = create((set, get) => ({
         },
         (payload) => {
           if (payload.new.sender_id !== userId) {
-            // Refresh unread count and conversations
             get().fetchUnreadCount(userId);
             get().fetchConversations(userId);
           }
@@ -208,6 +217,7 @@ export const useChatStore = create((set, get) => ({
       )
       .subscribe();
 
+    set({ globalChannel: channel });
     return channel;
   },
 
@@ -256,9 +266,10 @@ export const useChatStore = create((set, get) => ({
 
   // Cleanup
   cleanup: () => {
-    const { realtimeChannel, presenceChannel } = get();
+    const { realtimeChannel, presenceChannel, globalChannel } = get();
     if (realtimeChannel) supabase.removeChannel(realtimeChannel);
     if (presenceChannel) supabase.removeChannel(presenceChannel);
-    set({ realtimeChannel: null, presenceChannel: null, messages: [], activeConversation: null });
+    if (globalChannel) supabase.removeChannel(globalChannel);
+    set({ realtimeChannel: null, presenceChannel: null, globalChannel: null, messages: [], activeConversation: null });
   },
 }));

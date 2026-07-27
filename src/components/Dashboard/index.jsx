@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { useUserStore, useIdeaStore, useEventStore } from '../../store';
+import { useNotificationStore } from '../../store/notificationStore';
+import { useChatStore } from '../../store/chatStore';
 import TopHeader from '../header/TopHeader';
 import LeftSidebar from './LeftSidebar';
 import Marketplace from './Marketplace';
@@ -29,14 +31,40 @@ export default function Dashboard() {
   const { currentUser, currentUserProfile, fetchUser } = useUserStore();
   const { projects, loadingIdeas: loading, fetchIdeas, fetchIdeaDetails } = useIdeaStore();
   const { events, loadingEvents, fetchEvents } = useEventStore();
+  const { badges, fetchNotifications, subscribeToNotifications, clearBadge, cleanup: cleanupNotifs } = useNotificationStore();
+  const { unreadCount: msgUnread, fetchUnreadCount, subscribeToGlobalMessages } = useChatStore();
 
   const isAdmin = currentUserProfile?.user_role === 'admin';
+
+  // Merged badge counts: messages badge comes from chat unread count
+  const navBadges = { ...badges, messages: msgUnread };
 
   useEffect(() => {
     fetchUser();
     fetchIdeas();
     fetchEvents();
   }, [fetchUser, fetchIdeas, fetchEvents]);
+
+  // Bootstrap notifications once we know the user
+  useEffect(() => {
+    if (!currentUser?.id) return;
+    fetchNotifications(currentUser.id);
+    fetchUnreadCount(currentUser.id);
+    subscribeToNotifications(currentUser.id);
+    subscribeToGlobalMessages(currentUser.id);
+    return () => {
+      cleanupNotifs();
+      // globalChannel is cleaned up inside useChatStore.cleanup()
+      // (called by Messages.jsx on unmount); no manual removal needed here.
+    };
+  }, [currentUser?.id]);
+
+  // Clear the badge for a section when the user navigates there
+  useEffect(() => {
+    if (currentUser?.id) {
+      clearBadge(activeTab, currentUser.id);
+    }
+  }, [activeTab, currentUser?.id]);
 
   // Redirect admins to /admin
   useEffect(() => {
@@ -136,6 +164,7 @@ export default function Dashboard() {
         isAdmin={isAdmin}
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
+        badges={navBadges}
       />
 
       {/* Main Content */}
